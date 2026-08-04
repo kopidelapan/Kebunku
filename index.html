@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>🌱 Smart Plant Calendar - Multi Tanaman</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ===== GLOBAL ===== */
+        * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { margin: 0; padding: 12px; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; transition: background 0.3s, color 0.3s; }
+        @media (min-width: 768px) { body { padding: 20px; } }
+
+        .dark body { background-color: #0f172a; color: #e2e8f0; }
+        .dark .bg-white { background-color: #1e293b !important; }
+        .dark .bg-gray-50 { background-color: #1e293b !important; }
+        .dark .bg-slate-50 { background-color: #1e293b !important; }
+        .dark .border-gray-200 { border-color: #334155 !important; }
+        .dark .text-gray-500, .dark .text-gray-600 { color: #94a3b8 !important; }
+        .dark .text-gray-700 { color: #cbd5e1 !important; }
+        .dark .text-gray-800 { color: #e2e8f0 !important; }
+        .dark .bg-blue-50 { background-color: #1e3a5f !important; }
+        .dark .bg-blue-100 { background-color: #1e3a5f !important; }
+        .dark .text-blue-800 { color: #93c5fd !important; }
+        .dark .bg-teal-100 { background-color: #134e4a !important; }
+        .dark .text-teal-800 { color: #5eead4 !important; }
+
+        /* Header */
+        .header { margin-bottom: 16px; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+        .header h1 { margin: 0; font-size: 1.15rem; color: #0f172a; line-height: 1.3; }
+        .dark .header h1 { color: #e2e8f0; }
+        .header p { margin: 0; font-size: 0.8rem; color: #64748b; }
+        .dark .header p { color: #94a3b8; }
+        .header-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+        /* Plant Bar */
+        .plant-bar { background: #ffffff; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1; margin-bottom: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .dark .plant-bar { background: #1e293b; border-color: #334155; }
+        .plant-bar .control-group { display: flex; flex-direction: column; gap: 4px; }
+        .plant-bar label { font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.3px; }
+        .dark .plant-bar label { color: #94a3b8; }
+        .plant-bar select, .plant-bar input { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; outline: none; background-color: #f8fafc; height: 38px; }
+        .dark .plant-bar select, .dark .plant-bar input { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+        .plant-bar select:focus, .plant-bar input:focus { border-color: #3b82f6; background-color: #ffffff; }
+        .dark .plant-bar select:focus, .dark .plant-bar input:focus { background: #1e293b; }
+        .btn-group-grid { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 2px; }
+        @media (min-width: 768px) { .plant-bar { grid-template-columns: 2fr 1.2fr; align-items: end; padding: 16px; } .btn-group-grid { grid-template-columns: repeat(4, 1fr); } }
+
+        /* Buttons */
+        button { touch-action: manipulation; transition: all 0.15s ease; }
+        .btn-action, .btn-summary, .btn-edit-plant, .btn-delete-plant, .btn-export, .btn-import, .btn-dark-toggle {
+            width: 100%; border: none; padding: 9px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; text-align: center; min-height: 38px; gap: 4px;
+        }
+        .btn-action { background-color: #2563eb; color: #ffffff; }
+        .btn-action:active { background-color: #1d4ed8; }
+        .btn-summary { background-color: #8b5cf6; color: #ffffff; }
+        .btn-summary:active { background-color: #7c3aed; }
+        .btn-edit-plant { background-color: #059669; color: #ffffff; }
+        .btn-edit-plant:active { background-color: #047857; }
+        .btn-delete-plant { background-color: #ef4444; color: #ffffff; }
+        .btn-delete-plant:active { background-color: #dc2626; }
+        .btn-export { background-color: #0ea5e9; color: #ffffff; }
+        .btn-export:active { background-color: #0284c7; }
+        .btn-import { background-color: #f59e0b; color: #ffffff; }
+        .btn-import:active { background-color: #d97706; }
+        .btn-dark-toggle { background-color: #64748b; color: #ffffff; }
+        .btn-dark-toggle:active { background-color: #475569; }
+        .btn-icon { width: 38px; min-width: 38px; padding: 0; }
+
+        /* Legend */
+        .legend { display: flex; flex-wrap: wrap; gap: 8px 12px; margin-bottom: 12px; background: #ffffff; padding: 10px 12px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.75rem; font-weight: 600; }
+        .dark .legend { background: #1e293b; border-color: #334155; }
+        .legend-item { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .color-box { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+        /* Dashboard Tugas Hari Ini */
+        #today-tasks { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 12px; margin-bottom: 16px; }
+        .dark #today-tasks { background: #1e3a5f; border-color: #3b82f6; }
+        #today-tasks h3 { margin: 0 0 8px 0; font-size: 0.95rem; font-weight: 700; color: #1e40af; }
+        .dark #today-tasks h3 { color: #93c5fd; }
+        .task-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: white; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 4px; flex-wrap: wrap; }
+        .dark .task-item { background: #0f172a; border-color: #334155; }
+        .task-plant { font-weight: 600; }
+        .task-hst { font-size: 0.7rem; color: #64748b; }
+        .task-phase { font-size: 0.7rem; background: #dbeafe; color: #1e40af; padding: 0 6px; border-radius: 4px; }
+        .dark .task-phase { background: #1e3a5f; color: #93c5fd; }
+        .task-fert { font-size: 0.7rem; background: #ccfbf1; color: #0f766e; padding: 0 6px; border-radius: 4px; }
+        .dark .task-fert { background: #134e4a; color: #5eead4; }
+        .task-done { color: #22c55e; font-weight: bold; }
+        .task-miss { color: #f87171; }
+
+        /* Table Container */
+        .table-container { width: 100%; overflow-x: auto; background: #ffffff; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: 0 1px 3px rgba(0,0,0,0.05); -webkit-overflow-scrolling: touch; position: relative; }
+        .dark .table-container { background: #1e293b; border-color: #334155; }
+        table { border-collapse: separate; border-spacing: 0; font-size: 0.75rem; table-layout: fixed; min-width: max-content; }
+        th, td { border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; text-align: center; padding: 6px 6px; white-space: nowrap; min-width: 65px; position: relative; cursor: pointer; user-select: none; }
+        .dark th, .dark td { border-color: #334155; }
+        th.sticky-col, td.sticky-col { position: sticky; left: 0; background-color: #0f172a !important; color: #ffffff; font-weight: 600; text-align: left; padding: 8px 10px; z-index: 10; width: 130px; min-width: 130px; box-shadow: 2px 0 6px rgba(0,0,0,0.12); cursor: default; border-right: 1px solid #334155; }
+        .dark th.sticky-col, .dark td.sticky-col { background-color: #0f172a !important; }
+        @media (min-width: 768px) { th.sticky-col, td.sticky-col { width: 160px; min-width: 160px; padding: 8px 12px; } }
+        th.header-day { background-color: #334155; color: #f8fafc; font-weight: 600; font-size: 0.7rem; cursor: default; padding: 6px; }
+        .dark th.header-day { background-color: #1e293b; color: #e2e8f0; }
+        tr.date-row td { background-color: #f1f5f9; color: #475569; font-weight: 600; font-size: 0.7rem; }
+        .dark tr.date-row td { background-color: #1e293b; color: #94a3b8; }
+
+        .fase-pindah { background-color: #fef08a !important; color: #854d0e; font-weight: 600; }
+        .fase-vegetatif { background-color: #bbf7d0 !important; color: #166534; font-weight: 600; }
+        .fase-generatif { background-color: #fed7aa !important; color: #9a3412; font-weight: 600; }
+        .fase-panen { background-color: #fecaca !important; color: #991b1b; font-weight: 600; }
+        .dark .fase-pindah { background-color: #a16207 !important; color: #fef08a !important; }
+        .dark .fase-vegetatif { background-color: #166534 !important; color: #bbf7d0 !important; }
+        .dark .fase-generatif { background-color: #9a3412 !important; color: #fed7aa !important; }
+        .dark .fase-panen { background-color: #7f1d1d !important; color: #fecaca !important; }
+
+        .today-highlight { background-color: #eab308 !important; color: #ffffff !important; font-weight: 700 !important; outline: 2px solid #ca8a04 !important; outline-offset: -2px; }
+        .dark .today-highlight { background-color: #ca8a04 !important; color: #0f172a !important; outline-color: #eab308 !important; }
+
+        .has-comment::after { content: ''; position: absolute; top: 3px; right: 3px; width: 6px; height: 6px; background-color: #dc2626; border-radius: 50%; border: 1px solid #ffffff; }
+        .fertilizer-tag { display: block; font-size: 0.6rem; background-color: #0284c7; color: #ffffff; padding: 1px 3px; border-radius: 3px; margin-top: 2px; font-weight: bold; line-height: 1.1; white-space: normal; max-width: 80px; margin-left: auto; margin-right: auto; }
+
+        /* Scroll to today button */
+        #scroll-today-btn { position: fixed; bottom: 20px; right: 20px; z-index: 50; background: #2563eb; color: white; border: none; border-radius: 50%; width: 50px; height: 50px; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; }
+        #scroll-today-btn:active { transform: scale(0.9); }
+        .dark #scroll-today-btn { background: #3b82f6; }
+
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); z-index: 100; align-items: center; justify-content: center; padding: 12px; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #ffffff; border-radius: 12px; width: 100%; max-width: 500px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 88vh; display: flex; flex-direction: column; animation: modalFadeIn 0.2s ease-out; }
+        .dark .modal-box { background: #1e293b; color: #e2e8f0; }
+        @keyframes modalFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; }
+        .dark .modal-header { border-color: #334155; }
+        .modal-header h3 { margin: 0; font-size: 1rem; color: #0f172a; }
+        .dark .modal-header h3 { color: #e2e8f0; }
+        .modal-close { background: transparent; border: none; font-size: 1.4rem; cursor: pointer; color: #64748b; padding: 0 4px; line-height: 1; }
+        .dark .modal-close { color: #94a3b8; }
+        .modal-body { overflow-y: auto; padding-right: 2px; flex-grow: 1; }
+        .modal-body label { display: block; font-size: 0.78rem; font-weight: 600; color: #475569; margin-bottom: 4px; margin-top: 10px; }
+        .dark .modal-body label { color: #94a3b8; }
+        .modal-body textarea, .modal-body input, .modal-body select { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; outline: none; background: #f8fafc; }
+        .dark .modal-body textarea, .dark .modal-body input, .dark .modal-body select { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+        .modal-body textarea:focus, .modal-body input:focus, .modal-body select:focus { border-color: #3b82f6; background: #ffffff; }
+        .dark .modal-body textarea:focus, .dark .modal-body input:focus, .dark .modal-body select:focus { background: #1e293b; }
+        .modal-body textarea { height: 75px; resize: vertical; }
+        .phase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; margin-top: 6px; }
+        .dark .phase-grid { background: #0f172a; border-color: #334155; }
+        .fertilizer-schedule-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 6px; padding: 10px; margin-top: 10px; }
+        .dark .fertilizer-schedule-box { background: #0f172a; border-color: #3b82f6; }
+        .modal-footer { margin-top: 12px; padding-top: 10px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 8px; }
+        .dark .modal-footer { border-color: #334155; }
+        .btn-secondary { background: #e2e8f0; color: #334155; border: none; padding: 8px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+        .dark .btn-secondary { background: #334155; color: #e2e8f0; }
+        .btn-primary { background: #2563eb; color: #ffffff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: 600; }
+        .btn-primary:active { background: #1d4ed8; }
+        .btn-danger-modal { background: #ef4444; color: #ffffff; border: none; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; margin-right: auto; }
+        .btn-danger-modal:active { background: #dc2626; }
+
+        /* History */
+        .history-section { margin-top: 20px; background: #ffffff; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .dark .history-section { background: #1e293b; border-color: #334155; }
+        .history-section h2 { margin: 0 0 10px 0; font-size: 0.95rem; color: #0f172a; }
+        .dark .history-section h2 { color: #e2e8f0; }
+        .history-table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .history-table { width: 100%; border-collapse: collapse; font-size: 0.80rem; min-width: 500px; }
+        .history-table th { background-color: #f1f5f9; color: #334155; text-align: left; padding: 8px 10px; border-bottom: 2px solid #cbd5e1; font-size: 0.75rem; }
+        .dark .history-table th { background-color: #1e293b; color: #94a3b8; border-color: #334155; }
+        .history-table td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+        .dark .history-table td { border-color: #334155; }
+        .badge-plant { background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 0.7rem; display: inline-block; }
+        .dark .badge-plant { background: #1e3a5f; color: #93c5fd; }
+        .badge-hst { background: #f1f5f9; color: #334155; padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 0.7rem; display: inline-block; }
+        .dark .badge-hst { background: #334155; color: #e2e8f0; }
+        #history-search { margin-bottom: 8px; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%; max-width: 300px; background: #f8fafc; }
+        .dark #history-search { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px,1fr)); gap: 8px; margin-bottom: 12px; }
+        .stat-card { background: #f1f5f9; padding: 8px 12px; border-radius: 6px; text-align: center; }
+        .dark .stat-card { background: #0f172a; }
+        .stat-number { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+        .dark .stat-number { color: #e2e8f0; }
+        .stat-label { font-size: 0.65rem; color: #64748b; text-transform: uppercase; }
+
+        /* Grafik */
+        .chart-container { background: #ffffff; border-radius: 8px; padding: 10px; margin-bottom: 12px; border: 1px solid #e2e8f0; }
+        .dark .chart-container { background: #1e293b; border-color: #334155; }
+        #growth-chart { width: 100%; height: 80px; display: block; }
+
+        /* Summary Modal table sticky */
+        .summary-sticky-col { position: sticky !important; left: 0 !important; z-index: 20 !important; box-shadow: 2px 0 5px -1px rgba(0,0,0,0.1) !important; }
+        th.summary-sticky-col { z-index: 30 !important; background-color: #0f172a !important; color: #fff; }
+        .dark th.summary-sticky-col { background-color: #0f172a !important; }
+
+        /* Scrollbar */
+        .table-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+        .table-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .table-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .table-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dark .table-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
+        .dark .table-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+
+        /* Utility */
+        .hidden { display: none !important; }
+        .flex-center { display: flex; align-items: center; justify-content: center; gap: 6px; }
+    </style>
+</head>
+<body>
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <div>
+            <h1>🌱 Smart Plant Calendar</h1>
+            <p>Jadwal & Catatan Multi-Tanaman • <span id="current-date-display"></span></p>
+        </div>
+        <div class="header-actions">
+            <button class="btn-dark-toggle btn-icon" onclick="toggleDarkMode()" title="Ganti tema">🌓</button>
+            <button class="btn-export" onclick="exportData()" title="Backup data">💾</button>
+            <button class="btn-import" onclick="document.getElementById('import-file').click()" title="Restore data">📂</button>
+            <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this.files[0])">
+        </div>
+    </div>
+
+    <!-- ===== DASHBOARD TUGAS HARI INI ===== -->
+    <div id="today-tasks">
+        <h3>📋 Tugas Pemeliharaan Hari Ini</h3>
+        <div id="task-list"></div>
+    </div>
+
+    <!-- ===== PLANT BAR ===== -->
+    <div class="plant-bar">
+        <div class="control-group">
+            <label for="plant-select">Pilih Tanaman</label>
+            <select id="plant-select" onchange="switchPlant()"></select>
+        </div>
+        <div class="control-group">
+            <label for="hst0-date">Tanggal Tanam (HST0)</label>
+            <input type="date" id="hst0-date" onchange="updatePlantHst0()">
+        </div>
+        <div class="btn-group-grid">
+            <button class="btn-action" onclick="openAddPlantModal()">➕ Tanaman</button>
+            <button class="btn-summary" onclick="openSummaryModal()">📊 Summary</button>
+            <button class="btn-edit-plant" onclick="openEditPlantModal()">✎ Edit</button>
+            <button class="btn-delete-plant" onclick="deleteCurrentPlant()">🗑 Hapus</button>
+        </div>
+    </div>
+
+    <!-- ===== STATISTIK ===== -->
+    <div class="stats-grid" id="stats-container">
+        <div class="stat-card"><div class="stat-number" id="stat-age">-</div><div class="stat-label">Usia (HST)</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-harvest">-</div><div class="stat-label">Estimasi Panen</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-notes">-</div><div class="stat-label">Total Catatan</div></div>
+        <div class="stat-card"><div class="stat-number" id="stat-tasks">-</div><div class="stat-label">Tugas Hari Ini</div></div>
+    </div>
+
+    <!-- ===== GRAFIK ===== -->
+    <div class="chart-container">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-weight:600; font-size:0.8rem;">📈 Fase Pertumbuhan</span>
+            <span id="chart-plant-name" style="font-size:0.75rem; color:#64748b;"></span>
+        </div>
+        <canvas id="growth-chart" height="80"></canvas>
+    </div>
+
+    <!-- ===== LEGEND ===== -->
+    <div class="legend" id="legend-container"></div>
+
+    <!-- ===== MAIN TABLE ===== -->
+    <div class="table-container" id="table-container">
+        <table id="main-table">
+            <thead>
+                <tr id="row-hst-header"><th class="sticky-col">Fase / Hari</th></tr>
+                <tr id="row-date-header" class="date-row"><th class="sticky-col">Tanggal</th></tr>
+            </thead>
+            <tbody>
+                <tr id="row-pindah"><td class="sticky-col">1. Pindah Tanam</td></tr>
+                <tr id="row-vegetatif"><td class="sticky-col">2. Vegetatif</td></tr>
+                <tr id="row-generatif"><td class="sticky-col">3. Generatif</td></tr>
+                <tr id="row-panen"><td class="sticky-col">4. Panen</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ===== SCROLL TO TODAY BUTTON ===== -->
+    <button id="scroll-today-btn" onclick="scrollToToday()" title="Scroll ke hari ini">📅</button>
+
+    <!-- ===== HISTORY ===== -->
+    <div class="history-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+            <h2 style="margin:0;">📋 History Tindakan</h2>
+            <input type="text" id="history-search" placeholder="🔍 Cari catatan..." oninput="renderHistory()">
+        </div>
+        <div class="history-table-wrapper">
+            <table class="history-table">
+                <thead><tr><th>Tanaman</th><th>HST</th><th>Tanggal</th><th>Fase</th><th>Catatan</th></tr></thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== MODALS ===== -->
+    <!-- Summary Modal -->
+    <div class="modal-overlay" id="summary-modal">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                <h2 class="text-lg font-bold">📊 Summary Kalender</h2>
+                <button class="text-gray-400 hover:text-gray-600" onclick="closeModal('summary-modal')">&times;</button>
+            </div>
+            <div class="p-3 overflow-x-auto table-scrollbar">
+                <table class="w-full text-left border-separate border-spacing-0 text-xs min-w-[500px]">
+                    <thead><tr class="bg-slate-900 text-white" id="summary-header-row">
+                        <th class="py-2 px-3 border-r border-slate-700 summary-sticky-col bg-slate-900 text-white">Kalender</th>
+                    </tr></thead>
+                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="summary-body"></tbody>
+                </table>
+            </div>
+            <div class="p-3 bg-gray-50 dark:bg-slate-700 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+                <button class="px-4 py-2 bg-slate-200 dark:bg-slate-600 rounded-lg" onclick="closeModal('summary-modal')">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Modal -->
+    <div class="modal-overlay" id="comment-modal">
+        <div class="modal-box">
+            <div class="modal-header"><h3 id="modal-title">Tambah Catatan</h3><button class="modal-close" onclick="closeModal('comment-modal')">&times;</button></div>
+            <div class="modal-body">
+                <p id="modal-subtext" style="font-size:0.8rem; color:#64748b; margin:0 0 10px 0;"></p>
+                <div id="modal-fert-reminder" style="display:none; background:#e0f2fe; border:1px solid #7dd3fc; border-radius:6px; padding:8px 10px; margin-bottom:10px; font-size:0.8rem; color:#0369a1;">
+                    <strong>🧪 Nutrisi hari ini:</strong> <span id="modal-fert-text"></span>
+                </div>
+                <label for="comment-text">Catatan / Tindakan:</label>
+                <textarea id="comment-text" placeholder="misal: Beri NPK 5 gram, siram Jakaba 100ml..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-danger-modal" id="btn-delete-comment" onclick="deleteComment()" style="display:none;">Hapus</button>
+                <button class="btn-secondary" onclick="closeModal('comment-modal')">Batal</button>
+                <button class="btn-primary" onclick="saveComment()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Plant Modal -->
+    <div class="modal-overlay" id="add-plant-modal">
+        <div class="modal-box">
+            <div class="modal-header"><h3>Tambah Tanaman</h3><button class="modal-close" onclick="closeModal('add-plant-modal')">&times;</button></div>
+            <div class="modal-body">
+                <label for="preset-select">Preset:</label>
+                <select id="preset-select" onchange="applyPreset()">
+                    <option value="custom">Custom</option>
+                    <option value="cabai">Cabai / Tomat</option>
+                    <option value="jeruk">Jeruk Purut</option>
+                    <option value="sayur">Sayur Daun</option>
+                </select>
+                <label for="new-plant-name">Nama Tanaman:</label>
+                <input type="text" id="new-plant-name" placeholder="misal: Cabai Rawit Pot 1">
+                <label for="new-plant-group">Kategori:</label>
+                <select id="new-plant-group"><option value="Kebun">Kebun</option><option value="Pot">Pot</option><option value="Rumah Kaca">Rumah Kaca</option><option value="Lainnya">Lainnya</option></select>
+                <label for="new-plant-photo">URL Foto (opsional):</label>
+                <input type="url" id="new-plant-photo" placeholder="https://example.com/foto.jpg">
+                <label for="new-plant-hst0">Tanggal Tanam:</label>
+                <input type="date" id="new-plant-hst0">
+                <label style="margin-top:10px;">Durasi Fase (HST):</label>
+                <div class="phase-grid">
+                    <div><label>Pindah</label><input type="number" id="phase-pindah-end" value="2" min="1"></div>
+                    <div><label>Vegetatif</label><input type="number" id="phase-veg-end" value="35" min="2"></div>
+                    <div><label>Generatif</label><input type="number" id="phase-gen-end" value="80" min="3"></div>
+                    <div><label>Total Panen</label><input type="number" id="phase-total-hst" value="100" min="4"></div>
+                </div>
+                <div class="fertilizer-schedule-box">
+                    <label style="margin-top:0; color:#0369a1;">🧪 Pengingat Pemupukan:</label>
+                    <div style="display:flex; gap:8px; margin-top:6px;">
+                        <div style="flex:2;"><label style="font-size:0.7rem;">Pupuk Utama</label><input type="text" id="fert-name-1" value="NPK"></div>
+                        <div style="flex:1;"><label style="font-size:0.7rem;">Interval</label><input type="number" id="fert-interval-1" value="7"></div>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-top:6px;">
+                        <div style="flex:2;"><label style="font-size:0.7rem;">Organik / Jakaba</label><input type="text" id="fert-name-3" value="Jakaba"></div>
+                        <div style="flex:1;"><label style="font-size:0.7rem;">Interval</label><input type="number" id="fert-interval-3" value="7"></div>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-top:6px;">
+                        <div style="flex:2;"><label style="font-size:0.7rem;">Pupuk Generatif</label><input type="text" id="fert-name-2" value="MKP"></div>
+                        <div style="flex:1;"><label style="font-size:0.7rem;">Mulai HST</label><input type="number" id="fert-start-2" value="35"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('add-plant-modal')">Batal</button>
+                <button class="btn-primary" onclick="addNewPlant()">Tambah</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Plant Modal -->
+    <div class="modal-overlay" id="edit-plant-modal">
+        <div class="modal-box">
+            <div class="modal-header"><h3>Edit Tanaman</h3><button class="modal-close" onclick="closeModal('edit-plant-modal')">&times;</button></div>
+            <div class="modal-body">
+                <label for="edit-plant-name">Nama:</label>
+                <input type="text" id="edit-plant-name">
+                <label for="edit-plant-group">Kategori:</label>
+                <select id="edit-plant-group"><option value="Kebun">Kebun</option><option value="Pot">Pot</option><option value="Rumah Kaca">Rumah Kaca</option><option value="Lainnya">Lainnya</option></select>
+                <label for="edit-plant-photo">URL Foto:</label>
+                <input type="url" id="edit-plant-photo" placeholder="https://example.com/foto.jpg">
+                <label for="edit-plant-hst0">Tanggal Tanam:</label>
+                <input type="date" id="edit-plant-hst0">
+                <label style="margin-top:10px;">Durasi Fase:</label>
+                <div class="phase-grid">
+                    <div><label>Pindah</label><input type="number" id="edit-phase-pindah-end" min="1"></div>
+                    <div><label>Vegetatif</label><input type="number" id="edit-phase-veg-end" min="2"></div>
+                    <div><label>Generatif</label><input type="number" id="edit-phase-gen-end" min="3"></div>
+                    <div><label>Total Panen</label><input type="number" id="edit-phase-total-hst" min="4"></div>
+                </div>
+                <div class="fertilizer-schedule-box">
+                    <label style="margin-top:0; color:#0369a1;">🧪 Pengingat Pemupukan:</label>
+                    <div style="display:flex; gap:8px; margin-top:6px;">
+                        <div style="flex:2;"><label style="font-size:0.7rem;">Pupuk Utama</label><input type="text" id="edit-fert-name-1"></div>
+                        <div style="flex:1;"><label style="font-size:0.7rem;">Interval</label><input type="number" id="edit-fert-interval-1"></div>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-top:6px;">
+                        <div style="flex:2;"><label style="font-size:0.7rem;">Organik / Jakaba</label><input type="text" id="edit-fert-name-3"></div>
+                        <div style="flex:1;"><label style="font-size:0.7rem;">Interval</label><input type="number" id="edit-fert-interval-3"></div>
+                    </div>
+                    <div style="display:flex; gap:8px; margin-top:6px;">
+                        <div style="flex:2;"><label style="font-size:0.7rem;">Pupuk Generatif</label><input type="text" id="edit-fert-name-2"></div>
+                        <div style="flex:1;"><label style="font-size:0.7rem;">Mulai HST</label><input type="number" id="edit-fert-start-2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('edit-plant-modal')">Batal</button>
+                <button class="btn-primary" onclick="saveEditPlant()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        //  DATA
+        // =========================================================================
+        let plantsData = JSON.parse(localStorage.getItem("multi_custom_plants_v5") || "null");
+        if (!plantsData || Object.keys(plantsData).length === 0) {
+            const todayStr = new Date().toISOString().split('T')[0];
+            plantsData = {
+                "plant_1": {
+                    name: "Cabai (Pot Utama)",
+                    group: "Pot",
+                    photo: "",
+                    hst0: todayStr,
+                    totalHst: 100,
+                    phases: { pindah: 2, veg: 35, gen: 80, panen: 100 },
+                    fertilizers: { name1: "NPK", interval1: 7, name2: "MKP", start2: 35, name3: "Jakaba", interval3: 7 },
+                    comments: {}
+                },
+                "plant_2": {
+                    name: "Jeruk Purut",
+                    group: "Kebun",
+                    photo: "",
+                    hst0: todayStr,
+                    totalHst: 180,
+                    phases: { pindah: 7, veg: 60, gen: 130, panen: 180 },
+                    fertilizers: { name1: "Organik", interval1: 14, name2: "KNO3", start2: 61, name3: "Jakaba", interval3: 7 },
+                    comments: {}
+                }
+            };
+            localStorage.setItem("multi_custom_plants_v5", JSON.stringify(plantsData));
+        }
+
+        let currentPlantId = localStorage.getItem("active_custom_plant_id_v5") || Object.keys(plantsData)[0];
+        if (!plantsData[currentPlantId]) currentPlantId = Object.keys(plantsData)[0];
+        let activeHst = null;
+        let renderRange = { start: 1, end: 100 };
+
+        // =========================================================================
+        //  UTILITY
+        // =========================================================================
+        function getTodayStr() { return new Date().toISOString().split('T')[0]; }
+
+        function getHstForDate(plant, dateStr) {
+            const hst0 = new Date(plant.hst0 + 'T00:00:00');
+            const target = new Date(dateStr + 'T00:00:00');
+            const diff = Math.floor((target - hst0) / (1000*60*60*24)) + 1;
+            return diff;
+        }
+
+        function getPhaseName(hst, plant) {
+            const p = plant.phases;
+            if (hst <= p.pindah) return "Pindah Tanam";
+            if (hst <= p.veg) return "Fase Vegetatif";
+            if (hst <= p.gen) return "Fase Generatif";
+            return "Fase Panen";
+        }
+
+        function getPhaseClass(hst, plant) {
+            const p = plant.phases;
+            if (hst <= p.pindah) return "fase-pindah";
+            if (hst <= p.veg) return "fase-vegetatif";
+            if (hst <= p.gen) return "fase-generatif";
+            return "fase-panen";
+        }
+
+        function getFertilizerReminder(hst, plant) {
+            if (!plant.fertilizers) return null;
+            const f = plant.fertilizers;
+            let reminders = [];
+            if (f.name1 && f.interval1 > 0 && hst % f.interval1 === 0) reminders.push(f.name1);
+            if (f.name3 && f.interval3 > 0 && hst % f.interval3 === 0) reminders.push(f.name3);
+            if (f.name2 && f.start2 > 0 && hst >= f.start2) {
+                const interval2 = f.interval1 || 7;
+                if ((hst - f.start2) % interval2 === 0) reminders.push(f.name2);
+            }
+            return reminders.length > 0 ? reminders.join(" + ") : null;
+        }
+
+        function getTodayTasks() {
+            const today = getTodayStr();
+            const tasks = [];
+            for (let id in plantsData) {
+                const plant = plantsData[id];
+                const hst = getHstForDate(plant, today);
+                if (hst >= 1 && hst <= plant.totalHst) {
+                    const fert = getFertilizerReminder(hst, plant);
+                    if (fert) {
+                        tasks.push({
+                            plantId: id,
+                            plantName: plant.name,
+                            hst: hst,
+                            phase: getPhaseName(hst, plant),
+                            fert: fert,
+                            hasComment: !!plant.comments[hst]
+                        });
+                    }
+                }
+            }
+            return tasks;
+        }
+
+        function validatePhases(pindah, veg, gen, total) {
+            if (pindah >= veg || veg >= gen || gen >= total) {
+                alert("Urutan fase harus: Pindah < Vegetatif < Generatif < Total Panen");
+                return false;
+            }
+            return true;
+        }
+
+        // =========================================================================
+        //  SAVE / AUTO-SAVE
+        // =========================================================================
+        let saveTimeout = null;
+        function autoSave() {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                localStorage.setItem("multi_custom_plants_v5", JSON.stringify(plantsData));
+                localStorage.setItem("active_custom_plant_id_v5", currentPlantId);
+            }, 500);
+        }
+
+        function saveState() {
+            localStorage.setItem("multi_custom_plants_v5", JSON.stringify(plantsData));
+            localStorage.setItem("active_custom_plant_id_v5", currentPlantId);
+        }
+
+        // =========================================================================
+        //  PLANT SELECTOR
+        // =========================================================================
+        function populatePlantSelector() {
+            const select = document.getElementById("plant-select");
+            select.innerHTML = "";
+            for (let id in plantsData) {
+                const opt = document.createElement("option");
+                opt.value = id;
+                const plant = plantsData[id];
+                opt.innerText = plant.name + (plant.group ? ` (${plant.group})` : '');
+                if (id === currentPlantId) opt.selected = true;
+                select.appendChild(opt);
+            }
+            document.getElementById("hst0-date").value = plantsData[currentPlantId].hst0;
+            document.getElementById("active-plant-title").innerText = plantsData[currentPlantId].name;
+            updateStatsAndChart();
+            renderTodayTasks();
+        }
+
+        function switchPlant() {
+            currentPlantId = document.getElementById("plant-select").value;
+            saveState();
+            populatePlantSelector();
+            renderTable();
+        }
+
+        function updatePlantHst0() {
+            const newHst0 = document.getElementById("hst0-date").value;
+            if (!newHst0) return;
+            plantsData[currentPlantId].hst0 = newHst0;
+            autoSave();
+            renderTable();
+            updateStatsAndChart();
+        }
+
+        // =========================================================================
+        //  RENDER TABLE (OPTIMIZED)
+        // =========================================================================
+        function renderTable() {
+            const plant = plantsData[currentPlantId];
+            const p = plant.phases;
+            const totalHst = plant.totalHst || p.panen || 100;
+            const hst0Date = new Date(plant.hst0 + 'T00:00:00');
+            const todayStr = getTodayStr();
+
+            // Tentukan rentang render: fokus pada hari ini ±30
+            const todayHst = getHstForDate(plant, todayStr);
+            const focus = 30;
+            let start = Math.max(1, todayHst - focus);
+            let end = Math.min(totalHst, todayHst + focus);
+            // Pastikan minimal 50 kolom
+            if (end - start < 40) {
+                start = Math.max(1, Math.floor((start + end)/2) - 20);
+                end = Math.min(totalHst, start + 40);
+            }
+            renderRange = { start, end };
+
+            // Bersihkan header & body
+            const rowHst = document.getElementById("row-hst-header");
+            const rowDate = document.getElementById("row-date-header");
+            const rowPindah = document.getElementById("row-pindah");
+            const rowVeg = document.getElementById("row-vegetatif");
+            const rowGen = document.getElementById("row-generatif");
+            const rowPanen = document.getElementById("row-panen");
+
+            rowHst.innerHTML = '<th class="sticky-col">Fase / Hari</th>';
+            rowDate.innerHTML = '<th class="sticky-col">Tanggal</th>';
+            rowPindah.innerHTML = '<td class="sticky-col">1. Pindah Tanam</td>';
+            rowVeg.innerHTML = '<td class="sticky-col">2. Vegetatif</td>';
+            rowGen.innerHTML = '<td class="sticky-col">3. Generatif</td>';
+            rowPanen.innerHTML = '<td class="sticky-col">4. Panen</td>';
+
+            let todayCell = null;
+
+            for (let hst = start; hst <= end; hst++) {
+                const curDate = new Date(hst0Date);
+                curDate.setDate(hst0Date.getDate() + (hst - 1));
+                const isoDate = curDate.toISOString().split('T')[0];
+                const day = String(curDate.getDate()).padStart(2,'0');
+                const month = String(curDate.getMonth()+1).padStart(2,'0');
+                const dateDisplay = `${day}/${month}`;
+                const fertReminder = getFertilizerReminder(hst, plant);
+
+                // Header HST
+                const th = document.createElement("th");
+                th.className = "header-day";
+                th.innerText = `H-${hst}`;
+                rowHst.appendChild(th);
+
+                // Row Tanggal
+                const tdDate = document.createElement("td");
+                tdDate.innerHTML = `<div>${dateDisplay}</div>`;
+                tdDate.dataset.hst = hst;
+                tdDate.dataset.date = dateDisplay;
+                if (isoDate === todayStr) { tdDate.classList.add("today-highlight"); todayCell = tdDate; }
+                if (plant.comments[hst]) tdDate.classList.add("has-comment");
+                rowDate.appendChild(tdDate);
+
+                // Fungsi buat sel fase
+                const createPhaseCell = (isPhase, phaseClass) => {
+                    const td = document.createElement("td");
+                    td.dataset.hst = hst;
+                    td.dataset.date = dateDisplay;
+                    if (isPhase) {
+                        td.className = phaseClass;
+                        let content = `<div>H-${hst}</div>`;
+                        if (fertReminder) content += `<span class="fertilizer-tag">🧪 ${fertReminder}</span>`;
+                        td.innerHTML = content;
+                        if (plant.comments[hst]) td.classList.add("has-comment");
+                        // Tooltip
+                        if (plant.comments[hst]) td.title = plant.comments[hst].comment.substring(0, 60) + (plant.comments[hst].comment.length>60?'...':'');
+                    } else {
+                        td.className = "bg-gray-50 dark:bg-slate-800 text-gray-300";
+                        td.innerText = "";
+                    }
+                    return td;
+                };
+
+                rowPindah.appendChild(createPhaseCell(hst >= 1 && hst <= p.pindah, "fase-pindah"));
+                rowVeg.appendChild(createPhaseCell(hst > p.pindah && hst <= p.veg, "fase-vegetatif"));
+                rowGen.appendChild(createPhaseCell(hst > p.veg && hst <= p.gen, "fase-generatif"));
+                rowPanen.appendChild(createPhaseCell(hst > p.gen && hst <= p.panen, "fase-panen"));
+            }
+
+            // Event delegation untuk semua td (kecuali sticky)
+            const table = document.getElementById("main-table");
+            // Hapus listener lama dengan clone? Lebih mudah pakai flag
+            if (!table._listener) {
+                table.addEventListener("click", (e) => {
+                    const td = e.target.closest("td");
+                    if (!td || td.classList.contains("sticky-col") || td.closest("thead")) return;
+                    const hst = td.dataset.hst;
+                    const date = td.dataset.date;
+                    if (hst) openCommentModal(parseInt(hst), date);
+                });
+                table._listener = true;
+            }
+
+            renderLegend(plant);
+            renderHistory();
+            updateStatsAndChart();
+            renderTodayTasks();
+
+            // Scroll ke hari ini
+            if (todayCell) {
+                setTimeout(() => {
+                    todayCell.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }, 300);
+            }
+
+            // Update tombol scroll
+            document.getElementById("scroll-today-btn").style.display = "flex";
+        }
+
+        // =========================================================================
+        //  LEGEND
+        // =========================================================================
+        function renderLegend(plant) {
+            const p = plant.phases;
+            const container = document.getElementById("legend-container");
+            container.innerHTML = `
+                <div class="legend-item"><span class="color-box" style="background:#fef08a;"></span>Pindah (1-${p.pindah})</div>
+                <div class="legend-item"><span class="color-box" style="background:#bbf7d0;"></span>Vegetatif (${p.pindah+1}-${p.veg})</div>
+                <div class="legend-item"><span class="color-box" style="background:#fed7aa;"></span>Generatif (${p.veg+1}-${p.gen})</div>
+                <div class="legend-item"><span class="color-box" style="background:#fecaca;"></span>Panen (${p.gen+1}-${p.panen})</div>
+                <div class="legend-item"><span class="color-box" style="background:#eab308;"></span>Hari Ini</div>
+                <div class="legend-item"><span style="background:#0284c7; color:#fff; border-radius:3px; padding:0 4px; font-size:0.65rem;">🧪</span> Pupuk</div>
+                <div class="legend-item"><span style="display:inline-block; width:7px; height:7px; background:#dc2626; border-radius:50%;"></span> Catatan</div>
+            `;
+        }
+
+        // =========================================================================
+        //  STATS & CHART
+        // =========================================================================
+        function updateStatsAndChart() {
+            const plant = plantsData[currentPlantId];
+            const today = getTodayStr();
+            const hst = getHstForDate(plant, today);
+            const totalHst = plant.totalHst || plant.phases.panen || 100;
+
+            document.getElementById("stat-age").innerText = (hst >= 1 && hst <= totalHst) ? hst : '-';
+            document.getElementById("stat-harvest").innerText = (hst >= 1 && hst <= totalHst) ? Math.max(0, totalHst - hst) + ' hari' : '-';
+            const notesCount = Object.keys(plant.comments).length;
+            document.getElementById("stat-notes").innerText = notesCount;
+            const tasks = getTodayTasks().filter(t => t.plantId === currentPlantId);
+            document.getElementById("stat-tasks").innerText = tasks.length;
+
+            // Chart
+            drawGrowthChart(plant);
+        }
+
+        function drawGrowthChart(plant) {
+            const canvas = document.getElementById('growth-chart');
+            const ctx = canvas.getContext('2d');
+            const total = plant.totalHst || 100;
+            const p = plant.phases;
+            const width = canvas.width = canvas.parentElement.clientWidth || 300;
+            const height = canvas.height = 80;
+
+            ctx.clearRect(0, 0, width, height);
+            const phases = [
+                { label: 'Pindah', start: 1, end: p.pindah, color: '#fef08a' },
+                { label: 'Veg', start: p.pindah+1, end: p.veg, color: '#bbf7d0' },
+                { label: 'Gen', start: p.veg+1, end: p.gen, color: '#fed7aa' },
+                { label: 'Panen', start: p.gen+1, end: p.panen, color: '#fecaca' }
+            ];
+            const barHeight = 30;
+            const y = (height - barHeight) / 2;
+            const xStart = 10;
+            const totalWidth = width - 20;
+            const todayHst = getHstForDate(plant, getTodayStr());
+
+            phases.forEach(phase => {
+                if (phase.start > total) return;
+                const startX = xStart + ((phase.start - 1) / total) * totalWidth;
+                const endX = xStart + (Math.min(phase.end, total) / total) * totalWidth;
+                const w = Math.max(2, endX - startX);
+                ctx.fillStyle = phase.color;
+                ctx.fillRect(startX, y, w, barHeight);
+                // Label phase
+                if (w > 20) {
+                    ctx.fillStyle = '#1e293b';
+                    ctx.font = '8px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    const label = phase.label + (phase.end < total ? '' : '');
+                    ctx.fillText(label, startX + w/2, y + barHeight/2);
+                }
+            });
+
+            // Tanda hari ini
+            if (todayHst >= 1 && todayHst <= total) {
+                const xToday = xStart + ((todayHst - 1) / total) * totalWidth;
+                ctx.strokeStyle = '#eab308';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(xToday, y);
+                ctx.lineTo(xToday, y + barHeight);
+                ctx.stroke();
+                ctx.fillStyle = '#eab308';
+                ctx.font = 'bold 8px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('⬇', xToday, y + barHeight + 12);
+            }
+            document.getElementById("chart-plant-name").innerText = plant.name;
+        }
+
+        // =========================================================================
+        //  TODAY TASKS
+        // =========================================================================
+        function renderTodayTasks() {
+            const container = document.getElementById('task-list');
+            const tasks = getTodayTasks();
+            if (tasks.length === 0) {
+                container.innerHTML = '<div class="text-green-600 dark:text-green-400">✅ Tidak ada tugas pemeliharaan hari ini.</div>';
+                return;
+            }
+            let html = '';
+            tasks.forEach(t => {
+                const plant = plantsData[t.plantId];
+                const photo = plant.photo ? `<img src="${plant.photo}" class="w-6 h-6 rounded-full object-cover" alt="">` : '';
+                html += `
+                    <div class="task-item">
+                        ${photo}
+                        <span class="task-plant">${t.plantName}</span>
+                        <span class="task-hst">HST-${t.hst}</span>
+                        <span class="task-phase">${t.phase}</span>
+                        <span class="task-fert">🧪 ${t.fert}</span>
+                        ${t.hasComment ? '<span class="task-done">✅</span>' : '<span class="task-miss">⚠️</span>'}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // =========================================================================
+        //  COMMENT MODAL
+        // =========================================================================
+        function openCommentModal(hst, dateDisplay) {
+            activeHst = hst;
+            const plant = plantsData[currentPlantId];
+            document.getElementById("modal-title").innerText = `Tindakan HST-${hst} (${dateDisplay})`;
+            document.getElementById("modal-subtext").innerText = `Tanaman: ${plant.name} | Fase: ${getPhaseName(hst, plant)}`;
+
+            const fert = getFertilizerReminder(hst, plant);
+            const fertBox = document.getElementById("modal-fert-reminder");
+            if (fert) {
+                document.getElementById("modal-fert-text").innerText = fert;
+                fertBox.style.display = "block";
+            } else {
+                fertBox.style.display = "none";
+            }
+
+            const commentArea = document.getElementById("comment-text");
+            const btnDelete = document.getElementById("btn-delete-comment");
+            if (plant.comments[hst]) {
+                commentArea.value = plant.comments[hst].comment;
+                btnDelete.style.display = "block";
+            } else {
+                commentArea.value = fert ? `Beri nutrisi ${fert}` : "";
+                btnDelete.style.display = "none";
+            }
+            document.getElementById("comment-modal").classList.add("active");
+            commentArea.focus();
+        }
+
+        function saveComment() {
+            if (!activeHst) return;
+            const text = document.getElementById("comment-text").value.trim();
+            const plant = plantsData[currentPlantId];
+            const hst0Date = new Date(plant.hst0 + 'T00:00:00');
+            const curDate = new Date(hst0Date);
+            curDate.setDate(hst0Date.getDate() + (activeHst - 1));
+            const dateStr = curDate.toISOString().split('T')[0];
+            const day = String(curDate.getDate()).padStart(2,'0');
+            const month = String(curDate.getMonth()+1).padStart(2,'0');
+            const year = curDate.getFullYear();
+            const displayDate = `${day}/${month}/${year}`;
+
+            if (text) {
+                plant.comments[activeHst] = { comment: text, dateStr: displayDate, phase: getPhaseName(activeHst, plant) };
+            } else {
+                delete plant.comments[activeHst];
+            }
+            autoSave();
+            closeModal("comment-modal");
+            renderTable();
+        }
+
+        function deleteComment() {
+            if (!activeHst) return;
+            delete plantsData[currentPlantId].comments[activeHst];
+            autoSave();
+            closeModal("comment-modal");
+            renderTable();
+        }
+
+        // =========================================================================
+        //  ADD / EDIT PLANT
+        // =========================================================================
+        function applyPreset() {
+            const preset = document.getElementById("preset-select").value;
+            const pindah = document.getElementById("phase-pindah-end");
+            const veg = document.getElementById("phase-veg-end");
+            const gen = document.getElementById("phase-gen-end");
+            const total = document.getElementById("phase-total-hst");
+            const fName1 = document.getElementById("fert-name-1");
+            const fInt1 = document.getElementById("fert-interval-1");
+            const fName2 = document.getElementById("fert-name-2");
+            const fStart2 = document.getElementById("fert-start-2");
+            const fName3 = document.getElementById("fert-name-3");
+            const fInt3 = document.getElementById("fert-interval-3");
+            const nameInput = document.getElementById("new-plant-name");
+            if (preset === "cabai") {
+                nameInput.value = "Cabai / Tomat";
+                pindah.value=2; veg.value=35; gen.value=80; total.value=100;
+                fName1.value="NPK"; fInt1.value=7; fName2.value="MKP"; fStart2.value=35; fName3.value="Jakaba"; fInt3.value=7;
+            } else if (preset === "jeruk") {
+                nameInput.value = "Jeruk Purut";
+                pindah.value=7; veg.value=60; gen.value=130; total.value=180;
+                fName1.value="Organik"; fInt1.value=14; fName2.value="KNO3"; fStart2.value=61; fName3.value="Jakaba"; fInt3.value=7;
+            } else if (preset === "sayur") {
+                nameInput.value = "Sayur Daun";
+                pindah.value=3; veg.value=25; gen.value=35; total.value=45;
+                fName1.value="AB Mix"; fInt1.value=5; fName2.value=""; fStart2.value=""; fName3.value="Jakaba"; fInt3.value=5;
+            }
+        }
+
+        function openAddPlantModal() {
+            document.getElementById("preset-select").value = "custom";
+            document.getElementById("new-plant-name").value = "";
+            document.getElementById("new-plant-group").value = "Kebun";
+            document.getElementById("new-plant-photo").value = "";
+            document.getElementById("new-plant-hst0").value = getTodayStr();
+            document.getElementById("phase-pindah-end").value = 2;
+            document.getElementById("phase-veg-end").value = 35;
+            document.getElementById("phase-gen-end").value = 80;
+            document.getElementById("phase-total-hst").value = 100;
+            document.getElementById("fert-name-1").value = "NPK";
+            document.getElementById("fert-interval-1").value = 7;
+            document.getElementById("fert-name-2").value = "MKP";
+            document.getElementById("fert-start-2").value = 35;
+            document.getElementById("fert-name-3").value = "Jakaba";
+            document.getElementById("fert-interval-3").value = 7;
+            document.getElementById("add-plant-modal").classList.add("active");
+        }
+
+        function addNewPlant() {
+            const name = document.getElementById("new-plant-name").value.trim();
+            const group = document.getElementById("new-plant-group").value;
+            const photo = document.getElementById("new-plant-photo").value.trim();
+            const hst0 = document.getElementById("new-plant-hst0").value;
+            const pindah = parseInt(document.getElementById("phase-pindah-end").value) || 2;
+            const veg = parseInt(document.getElementById("phase-veg-end").value) || 35;
+            const gen = parseInt(document.getElementById("phase-gen-end").value) || 80;
+            const total = parseInt(document.getElementById("phase-total-hst").value) || 100;
+            if (!name) { alert("Masukkan nama tanaman!"); return; }
+            if (!validatePhases(pindah, veg, gen, total)) return;
+
+            const newId = "plant_" + Date.now();
+            plantsData[newId] = {
+                name, group, photo,
+                hst0,
+                totalHst: total,
+                phases: { pindah, veg, gen, panen: total },
+                fertilizers: {
+                    name1: document.getElementById("fert-name-1").value.trim(),
+                    interval1: parseInt(document.getElementById("fert-interval-1").value) || 0,
+                    name2: document.getElementById("fert-name-2").value.trim(),
+                    start2: parseInt(document.getElementById("fert-start-2").value) || 0,
+                    name3: document.getElementById("fert-name-3").value.trim(),
+                    interval3: parseInt(document.getElementById("fert-interval-3").value) || 0
+                },
+                comments: {}
+            };
+            currentPlantId = newId;
+            saveState();
+            closeModal("add-plant-modal");
+            populatePlantSelector();
+            renderTable();
+        }
+
+        function openEditPlantModal() {
+            const plant = plantsData[currentPlantId];
+            document.getElementById("edit-plant-name").value = plant.name;
+            document.getElementById("edit-plant-group").value = plant.group || "Kebun";
+            document.getElementById("edit-plant-photo").value = plant.photo || "";
+            document.getElementById("edit-plant-hst0").value = plant.hst0;
+            document.getElementById("edit-phase-pindah-end").value = plant.phases.pindah;
+            document.getElementById("edit-phase-veg-end").value = plant.phases.veg;
+            document.getElementById("edit-phase-gen-end").value = plant.phases.gen;
+            document.getElementById("edit-phase-total-hst").value = plant.totalHst || plant.phases.panen;
+            const f = plant.fertilizers || {};
+            document.getElementById("edit-fert-name-1").value = f.name1 || "";
+            document.getElementById("edit-fert-interval-1").value = f.interval1 || "";
+            document.getElementById("edit-fert-name-2").value = f.name2 || "";
+            document.getElementById("edit-fert-start-2").value = f.start2 || "";
+            document.getElementById("edit-fert-name-3").value = f.name3 || "Jakaba";
+            document.getElementById("edit-fert-interval-3").value = f.interval3 || "";
+            document.getElementById("edit-plant-modal").classList.add("active");
+        }
+
+        function saveEditPlant() {
+            const name = document.getElementById("edit-plant-name").value.trim();
+            const group = document.getElementById("edit-plant-group").value;
+            const photo = document.getElementById("edit-plant-photo").value.trim();
+            const hst0 = document.getElementById("edit-plant-hst0").value;
+            const pindah = parseInt(document.getElementById("edit-phase-pindah-end").value) || 2;
+            const veg = parseInt(document.getElementById("edit-phase-veg-end").value) || 35;
+            const gen = parseInt(document.getElementById("edit-phase-gen-end").value) || 80;
+            const total = parseInt(document.getElementById("edit-phase-total-hst").value) || 100;
+            if (!name) { alert("Masukkan nama tanaman!"); return; }
+            if (!validatePhases(pindah, veg, gen, total)) return;
+
+            const plant = plantsData[currentPlantId];
+            plant.name = name; plant.group = group; plant.photo = photo; plant.hst0 = hst0;
+            plant.totalHst = total;
+            plant.phases = { pindah, veg, gen, panen: total };
+            plant.fertilizers = {
+                name1: document.getElementById("edit-fert-name-1").value.trim(),
+                interval1: parseInt(document.getElementById("edit-fert-interval-1").value) || 0,
+                name2: document.getElementById("edit-fert-name-2").value.trim(),
+                start2: parseInt(document.getElementById("edit-fert-start-2").value) || 0,
+                name3: document.getElementById("edit-fert-name-3").value.trim(),
+                interval3: parseInt(document.getElementById("edit-fert-interval-3").value) || 0
+            };
+            // Update phase di comments
+            for (let hst in plant.comments) {
+                plant.comments[hst].phase = getPhaseName(parseInt(hst), plant);
+            }
+            autoSave();
+            closeModal("edit-plant-modal");
+            populatePlantSelector();
+            renderTable();
+        }
+
+        function deleteCurrentPlant() {
+            if (Object.keys(plantsData).length <= 1) { alert("Minimal 1 tanaman tersisa."); return; }
+            if (confirm(`Hapus "${plantsData[currentPlantId].name}"?`)) {
+                delete plantsData[currentPlantId];
+                currentPlantId = Object.keys(plantsData)[0];
+                saveState();
+                populatePlantSelector();
+                renderTable();
+            }
+        }
+
+        // =========================================================================
+        //  SUMMARY
+        // =========================================================================
+        function openSummaryModal() {
+            const headerRow = document.getElementById("summary-header-row");
+            const tbody = document.getElementById("summary-body");
+            headerRow.innerHTML = '<th class="py-2 px-3 border-r border-slate-700 summary-sticky-col bg-slate-900 text-white">Kalender</th>';
+            tbody.innerHTML = "";
+            const plantIds = Object.keys(plantsData);
+            let minDate = null, maxDate = null;
+            plantIds.forEach(id => {
+                const plant = plantsData[id];
+                const th = document.createElement("th");
+                th.className = "py-2 px-3 border-b border-slate-700 text-center border-r border-slate-800 text-white";
+                th.innerText = plant.name;
+                headerRow.appendChild(th);
+                const hst0 = new Date(plant.hst0 + 'T00:00:00');
+                const end = new Date(hst0); end.setDate(hst0.getDate() + (plant.totalHst||100) - 1);
+                if (!minDate || hst0 < minDate) minDate = new Date(hst0);
+                if (!maxDate || end > maxDate) maxDate = new Date(end);
+            });
+            if (!minDate || !maxDate) return;
+            const todayStr = getTodayStr();
+            const monthNames = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
+
+            for (let d = new Date(minDate); d <= maxDate; d.setDate(d.getDate() + 1)) {
+                const isoDate = d.toISOString().split('T')[0];
+                const displayDate = `${String(d.getDate()).padStart(2,'0')} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors";
+                const tdDate = document.createElement("td");
+                const bg = isoDate === todayStr ? "bg-amber-100 dark:bg-amber-900 text-amber-900 dark:text-amber-100" : "bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200";
+                tdDate.className = `py-2 px-3 font-semibold summary-sticky-col ${bg} border-r border-b border-gray-200 dark:border-gray-700 text-center`;
+                tdDate.innerHTML = `${displayDate}${isoDate === todayStr ? ' <span class="text-[10px]">📍</span>' : ''}`;
+                tr.appendChild(tdDate);
+
+                plantIds.forEach(id => {
+                    const plant = plantsData[id];
+                    const hst = getHstForDate(plant, isoDate);
+                    const td = document.createElement("td");
+                    td.className = "p-2 border-r border-b border-gray-200 dark:border-gray-700 text-center";
+                    if (hst >= 1 && hst <= plant.totalHst) {
+                        const phaseClass = getPhaseClass(hst, plant);
+                        const phaseName = getPhaseName(hst, plant);
+                        const fert = getFertilizerReminder(hst, plant);
+                        let fertHtml = fert ? `<div class="text-[10px] text-teal-700 dark:text-teal-300">🧪 ${fert}</div>` : "";
+                        let commentHtml = plant.comments[hst] ? `<div class="text-[10px] text-gray-600 dark:text-gray-400">💬 ${plant.comments[hst].comment.substring(0,20)}${plant.comments[hst].comment.length>20?'...':''}</div>` : "";
+                        td.className += ` ${phaseClass}`;
+                        td.innerHTML = `<div class="font-bold">HST-${hst}</div><div class="text-[10px]">${phaseName}</div>${fertHtml}${commentHtml}`;
+                    } else {
+                        td.className += " text-gray-300 dark:text-gray-600";
+                        td.innerText = "-";
+                    }
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            }
+            document.getElementById("summary-modal").classList.add("active");
+        }
+
+        // =========================================================================
+        //  HISTORY WITH FILTER
+        // =========================================================================
+        function renderHistory() {
+            const search = document.getElementById("history-search").value.toLowerCase();
+            const tbody = document.getElementById("history-body");
+            tbody.innerHTML = "";
+            const allEntries = [];
+            for (let id in plantsData) {
+                const plant = plantsData[id];
+                for (let hst in plant.comments) {
+                    const item = plant.comments[hst];
+                    allEntries.push({
+                        plantName: plant.name,
+                        hst: parseInt(hst),
+                        dateStr: item.dateStr,
+                        phase: item.phase,
+                        comment: item.comment,
+                        searchStr: (plant.name + " " + item.comment + " " + item.phase).toLowerCase()
+                    });
+                }
+            }
+            const filtered = search ? allEntries.filter(e => e.searchStr.includes(search)) : allEntries;
+            filtered.sort((a,b) => a.hst - b.hst);
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:16px;">Tidak ada catatan.</td></tr>';
+                return;
+            }
+            filtered.forEach(e => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><span class="badge-plant">${e.plantName}</span></td>
+                    <td><span class="badge-hst">HST-${e.hst}</span></td>
+                    <td><strong>${e.dateStr}</strong></td>
+                    <td>${e.phase}</td>
+                    <td>${e.comment.replace(/\n/g, '<br>')}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // =========================================================================
+        //  EXPORT / IMPORT
+        // =========================================================================
+        function exportData() {
+            const dataStr = JSON.stringify(plantsData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `jadwal_tanaman_${getTodayStr()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (confirm('Data akan menggantikan semua data saat ini. Lanjutkan?')) {
+                        plantsData = data;
+                        currentPlantId = Object.keys(plantsData)[0] || "plant_1";
+                        saveState();
+                        populatePlantSelector();
+                        renderTable();
+                        alert("Data berhasil diimpor!");
+                    }
+                } catch(err) { alert("File tidak valid!"); }
+            };
+            reader.readAsText(file);
+            document.getElementById("import-file").value = ""; // reset
+        }
+
+        // =========================================================================
+        //  DARK MODE
+        // =========================================================================
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        }
+
+        // =========================================================================
+        //  SCROLL TO TODAY
+        // =========================================================================
+        function scrollToToday() {
+            const todayCell = document.querySelector('.today-highlight');
+            if (todayCell) {
+                todayCell.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            } else {
+                // fallback scroll ke tengah
+                document.getElementById("table-container").scrollLeft = 0;
+            }
+        }
+
+        // =========================================================================
+        //  MODAL HELPERS
+        // =========================================================================
+        function closeModal(id) {
+            document.getElementById(id).classList.remove("active");
+        }
+
+        // =========================================================================
+        //  NOTIFICATION
+        // =========================================================================
+        async function requestNotification() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                await Notification.requestPermission();
+            }
+            if (Notification.permission === 'granted') {
+                const tasks = getTodayTasks();
+                if (tasks.length > 0) {
+                    new Notification('🌱 Jadwal Pemeliharaan Tanaman', {
+                        body: tasks.map(t => `${t.plantName}: ${t.fert}`).join('\n'),
+                        icon: '🌿'
+                    });
+                }
+            }
+        }
+
+        // =========================================================================
+        //  INIT
+        // =========================================================================
+        document.addEventListener("DOMContentLoaded", () => {
+            // Dark mode
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+            // Tampilkan tanggal
+            document.getElementById("current-date-display").innerText = new Date().toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+            populatePlantSelector();
+            renderTable();
+            // Notifikasi (minta izin)
+            setTimeout(requestNotification, 2000);
+            // Event listener untuk resize chart
+            window.addEventListener('resize', () => {
+                const plant = plantsData[currentPlantId];
+                if (plant) drawGrowthChart(plant);
+            });
+        });
+    </script>
+</body>
+</html>
