@@ -259,7 +259,7 @@
     </div>
 </div>
 
-<!-- MODALS (Summary, Comment, Add, Edit) -->
+<!-- MODALS -->
 <div class="modal-overlay" id="summary-modal">
     <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -374,7 +374,7 @@ const firebaseConfig = {
     projectId: "kebunku-db",
     storageBucket: "kebunku-db.firebasestorage.app",
     messagingSenderId: "489276234281",
-    appId: "1:489276234281:web:c89ec1353e2b93415d1a38"
+    appId: "1:489276234281:web:36a2270eb5adab325d1a38"
 };
 
 let db, auth, firebaseReady = false;
@@ -382,9 +382,10 @@ try {
     firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
     auth = firebase.auth();
-    console.log("Firebase initialized.");
+    console.log("Firebase initialized successfully.");
 } catch(e) { console.error("Firebase init error:", e); }
 
+// ===== STATE GLOBAL =====
 let plantsData = {}, currentPlantId = null, activeHst = null, isSyncing = false;
 
 function getTodayStr() { return new Date().toISOString().split('T')[0]; }
