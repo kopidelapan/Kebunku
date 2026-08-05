@@ -13,7 +13,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js">
     </script>
     <style>
-        /* semua style sama seperti sebelumnya, tidak diubah */
         * {
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -704,7 +703,7 @@
             background: #fff;
             border-radius: 12px;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             padding: 16px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, .2);
             max-height: 88vh;
@@ -1065,11 +1064,39 @@
             justify-content: center;
             gap: 6px;
         }
+
+        /* 4 kolom pupuk */
+        .fert-4-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .fert-4-grid>div {
+            min-width: 0;
+        }
+        .fert-4-grid label {
+            font-size: .65rem;
+            margin-top: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .fert-4-grid input {
+            font-size: .75rem;
+            padding: 4px 6px;
+            height: 32px;
+        }
+        @media(max-width:500px) {
+            .fert-4-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- ===== HEADER KOMPAK ===== -->
+    <!-- ===== HEADER ===== -->
     <div class="header">
         <div class="header-top">
             <div class="header-title">
@@ -1093,7 +1120,7 @@
         </div>
     </div>
 
-    <!-- ===== TUGAS HARI INI + 3 HARI KE DEPAN ===== -->
+    <!-- ===== TUGAS HARI INI + 3 HARI ===== -->
     <div id="today-tasks">
         <h3>📋 Tugas Pemeliharaan (Hari Ini + 3 Hari ke Depan)</h3>
         <div id="task-list"></div>
@@ -1163,7 +1190,7 @@
         </div>
     </div>
 
-    <!-- MODALS -->
+    <!-- ===== MODAL SUMMARY ===== -->
     <div class="modal-overlay" id="summary-modal">
         <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -1182,6 +1209,7 @@
         </div>
     </div>
 
+    <!-- ===== MODAL CATATAN ===== -->
     <div class="modal-overlay" id="comment-modal">
         <div class="modal-box">
             <div class="modal-header"><h3 id="modal-title">Tambah Catatan</h3><button class="modal-close" onclick="closeModal('comment-modal')">&times;</button></div>
@@ -1201,7 +1229,7 @@
         </div>
     </div>
 
-    <!-- MODAL TAMBAH TANAMAN (dengan jadwal hari) -->
+    <!-- ===== MODAL TAMBAH TANAMAN (4 PUPUK per FASE) ===== -->
     <div class="modal-overlay" id="add-plant-modal">
         <div class="modal-box">
             <div class="modal-header"><h3>Tambah Tanaman</h3><button class="modal-close" onclick="closeModal('add-plant-modal')">&times;</button></div>
@@ -1226,37 +1254,85 @@
                     <div><label>Total Panen</label><input type="number" id="phase-total-hst" value="100" min="4"></div>
                 </div>
 
-                <!-- FERTILIZER VEGETATIF -->
+                <!-- FERTILIZER VEGETATIF (4) -->
                 <div class="fertilizer-schedule-box" style="margin-top:12px;">
                     <label id="veg-fert-label-add" style="margin-top:0;color:#0369a1;">🧪 Pemupukan Fase Vegetatif (HST 1 - 35)</label>
-                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="veg-fert-name-1" value="NPK"></div>
-                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="veg-fert-days-1" value="7,14,21,28,35" placeholder="pisah koma"></div>
+                    <div class="fert-4-grid">
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 1</label>
+                            <input type="text" id="veg-fert-name-1" value="NPK">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="veg-fert-days-1" value="7,14,21,28,35" placeholder="pisah koma">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 2</label>
+                            <input type="text" id="veg-fert-name-2" value="Jakaba">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="veg-fert-days-2" value="7,14,21,28,35" placeholder="pisah koma">
+                        </div>
                     </div>
-                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="veg-fert-name-2" value="Jakaba"></div>
-                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="veg-fert-days-2" value="7,14,21,28,35" placeholder="pisah koma"></div>
-                    </div>
-                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="veg-fert-name-3" value=""></div>
-                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="veg-fert-days-3" value="" placeholder="pisah koma"></div>
+                    <div class="fert-4-grid" style="margin-top:4px;">
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 3</label>
+                            <input type="text" id="veg-fert-name-3" value="">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="veg-fert-days-3" value="" placeholder="pisah koma">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 4</label>
+                            <input type="text" id="veg-fert-name-4" value="">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="veg-fert-days-4" value="" placeholder="pisah koma">
+                        </div>
                     </div>
                 </div>
 
-                <!-- FERTILIZER GENERATIF -->
+                <!-- FERTILIZER GENERATIF (4) -->
                 <div class="fertilizer-schedule-box" style="margin-top:8px;">
                     <label id="gen-fert-label-add" style="margin-top:0;color:#0369a1;">🧪 Pemupukan Fase Generatif (HST 36 - 80)</label>
-                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="gen-fert-name-1" value="MKP"></div>
-                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="gen-fert-days-1" value="42,56" placeholder="pisah koma"></div>
+                    <div class="fert-4-grid">
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 1</label>
+                            <input type="text" id="gen-fert-name-1" value="MKP">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="gen-fert-days-1" value="42,56" placeholder="pisah koma">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 2</label>
+                            <input type="text" id="gen-fert-name-2" value="KNO3">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="gen-fert-days-2" value="49,63" placeholder="pisah koma">
+                        </div>
                     </div>
-                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="gen-fert-name-2" value="KNO3"></div>
-                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="gen-fert-days-2" value="49,63" placeholder="pisah koma"></div>
-                    </div>
-                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="gen-fert-name-3" value="Jakaba"></div>
-                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="gen-fert-days-3" value="42,49,56,63,70" placeholder="pisah koma"></div>
+                    <div class="fert-4-grid" style="margin-top:4px;">
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 3</label>
+                            <input type="text" id="gen-fert-name-3" value="Jakaba">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="gen-fert-days-3" value="42,49,56,63,70" placeholder="pisah koma">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 4</label>
+                            <input type="text" id="gen-fert-name-4" value="">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="gen-fert-days-4" value="" placeholder="pisah koma">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1267,7 +1343,7 @@
         </div>
     </div>
 
-    <!-- MODAL EDIT TANAMAN -->
+    <!-- ===== MODAL EDIT TANAMAN (4 PUPUK per FASE) ===== -->
     <div class="modal-overlay" id="edit-plant-modal">
         <div class="modal-box">
             <div class="modal-header"><h3>Edit Tanaman</h3><button class="modal-close" onclick="closeModal('edit-plant-modal')">&times;</button></div>
@@ -1284,37 +1360,85 @@
                     <div><label>Total Panen</label><input type="number" id="edit-phase-total-hst" min="4"></div>
                 </div>
 
-                <!-- FERTILIZER VEGETATIF EDIT -->
+                <!-- FERTILIZER VEGETATIF EDIT (4) -->
                 <div class="fertilizer-schedule-box" style="margin-top:12px;">
                     <label id="veg-fert-label-edit" style="margin-top:0;color:#0369a1;">🧪 Pemupukan Fase Vegetatif (HST 1 - 35)</label>
-                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="edit-veg-fert-name-1"></div>
-                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="edit-veg-fert-days-1" placeholder="pisah koma"></div>
+                    <div class="fert-4-grid">
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 1</label>
+                            <input type="text" id="edit-veg-fert-name-1">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="edit-veg-fert-days-1" placeholder="pisah koma">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 2</label>
+                            <input type="text" id="edit-veg-fert-name-2">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="edit-veg-fert-days-2" placeholder="pisah koma">
+                        </div>
                     </div>
-                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="edit-veg-fert-name-2"></div>
-                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="edit-veg-fert-days-2" placeholder="pisah koma"></div>
-                    </div>
-                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="edit-veg-fert-name-3"></div>
-                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="edit-veg-fert-days-3" placeholder="pisah koma"></div>
+                    <div class="fert-4-grid" style="margin-top:4px;">
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 3</label>
+                            <input type="text" id="edit-veg-fert-name-3">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="edit-veg-fert-days-3" placeholder="pisah koma">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 4</label>
+                            <input type="text" id="edit-veg-fert-name-4">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="edit-veg-fert-days-4" placeholder="pisah koma">
+                        </div>
                     </div>
                 </div>
 
-                <!-- FERTILIZER GENERATIF EDIT -->
+                <!-- FERTILIZER GENERATIF EDIT (4) -->
                 <div class="fertilizer-schedule-box" style="margin-top:8px;">
                     <label id="gen-fert-label-edit" style="margin-top:0;color:#0369a1;">🧪 Pemupukan Fase Generatif (HST 36 - 80)</label>
-                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="edit-gen-fert-name-1"></div>
-                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="edit-gen-fert-days-1" placeholder="pisah koma"></div>
+                    <div class="fert-4-grid">
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 1</label>
+                            <input type="text" id="edit-gen-fert-name-1">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="edit-gen-fert-days-1" placeholder="pisah koma">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 2</label>
+                            <input type="text" id="edit-gen-fert-name-2">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="edit-gen-fert-days-2" placeholder="pisah koma">
+                        </div>
                     </div>
-                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="edit-gen-fert-name-2"></div>
-                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="edit-gen-fert-days-2" placeholder="pisah koma"></div>
-                    </div>
-                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
-                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="edit-gen-fert-name-3"></div>
-                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="edit-gen-fert-days-3" placeholder="pisah koma"></div>
+                    <div class="fert-4-grid" style="margin-top:4px;">
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 3</label>
+                            <input type="text" id="edit-gen-fert-name-3">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="edit-gen-fert-days-3" placeholder="pisah koma">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Pupuk 4</label>
+                            <input type="text" id="edit-gen-fert-name-4">
+                        </div>
+                        <div>
+                            <label style="font-size:.65rem;">Jadwal (HST)</label>
+                            <input type="text" id="edit-gen-fert-days-4" placeholder="pisah koma">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1359,7 +1483,6 @@
                 plant.fertilizers = { vegetatif: [], generatif: [] };
                 return;
             }
-            // Jika sudah punya days, lewati
             if (plant.fertilizers.vegetatif && plant.fertilizers.vegetatif.length > 0 && plant.fertilizers.vegetatif[0].days) {
                 return;
             }
@@ -1385,7 +1508,6 @@
                 for (let d = old.start2; d <= genEnd; d += interval) days.push(d);
                 gen.push({ name: old.name2, days });
             }
-            // Tambahkan Jakaba ke gen jika ada di veg dan tidak ada di gen
             const vegNames = veg.map(v => v.name.toLowerCase());
             const genNames = gen.map(v => v.name.toLowerCase());
             if (vegNames.includes('jakaba') && !genNames.includes('jakaba')) {
@@ -1889,7 +2011,7 @@
             renderTable();
         }
 
-        // ===== ADD / EDIT PLANT (dengan days) =====
+        // ===== PRESET (4 PUPUK) =====
         function applyPreset() {
             const preset = document.getElementById("preset-select");
             if (!preset) return;
@@ -1898,43 +2020,38 @@
             const gen = document.getElementById("phase-gen-end");
             const total = document.getElementById("phase-total-hst");
             const nameInput = document.getElementById("new-plant-name");
-            // Veg ferts
-            const v1n = document.getElementById("veg-fert-name-1");
-            const v1d = document.getElementById("veg-fert-days-1");
-            const v2n = document.getElementById("veg-fert-name-2");
-            const v2d = document.getElementById("veg-fert-days-2");
-            const v3n = document.getElementById("veg-fert-name-3");
-            const v3d = document.getElementById("veg-fert-days-3");
-            // Gen ferts
-            const g1n = document.getElementById("gen-fert-name-1");
-            const g1d = document.getElementById("gen-fert-days-1");
-            const g2n = document.getElementById("gen-fert-name-2");
-            const g2d = document.getElementById("gen-fert-days-2");
-            const g3n = document.getElementById("gen-fert-name-3");
-            const g3d = document.getElementById("gen-fert-days-3");
 
+            // helper set 4 vegetatif
             function setVeg(arr) {
-                if (arr.length > 0) { v1n.value = arr[0].name || "";
-                    v1d.value = arr[0].days ? arr[0].days.join(',') : ""; } else { v1n.value = "";
-                    v1d.value = ""; }
-                if (arr.length > 1) { v2n.value = arr[1].name || "";
-                    v2d.value = arr[1].days ? arr[1].days.join(',') : ""; } else { v2n.value = "";
-                    v2d.value = ""; }
-                if (arr.length > 2) { v3n.value = arr[2].name || "";
-                    v3d.value = arr[2].days ? arr[2].days.join(',') : ""; } else { v3n.value = "";
-                    v3d.value = ""; }
+                for (let i = 0; i < 4; i++) {
+                    const nameEl = document.getElementById(`veg-fert-name-${i+1}`);
+                    const daysEl = document.getElementById(`veg-fert-days-${i+1}`);
+                    if (nameEl && daysEl) {
+                        if (i < arr.length) {
+                            nameEl.value = arr[i].name || "";
+                            daysEl.value = arr[i].days ? arr[i].days.join(',') : "";
+                        } else {
+                            nameEl.value = "";
+                            daysEl.value = "";
+                        }
+                    }
+                }
             }
 
             function setGen(arr) {
-                if (arr.length > 0) { g1n.value = arr[0].name || "";
-                    g1d.value = arr[0].days ? arr[0].days.join(',') : ""; } else { g1n.value = "";
-                    g1d.value = ""; }
-                if (arr.length > 1) { g2n.value = arr[1].name || "";
-                    g2d.value = arr[1].days ? arr[1].days.join(',') : ""; } else { g2n.value = "";
-                    g2d.value = ""; }
-                if (arr.length > 2) { g3n.value = arr[2].name || "";
-                    g3d.value = arr[2].days ? arr[2].days.join(',') : ""; } else { g3n.value = "";
-                    g3d.value = ""; }
+                for (let i = 0; i < 4; i++) {
+                    const nameEl = document.getElementById(`gen-fert-name-${i+1}`);
+                    const daysEl = document.getElementById(`gen-fert-days-${i+1}`);
+                    if (nameEl && daysEl) {
+                        if (i < arr.length) {
+                            nameEl.value = arr[i].name || "";
+                            daysEl.value = arr[i].days ? arr[i].days.join(',') : "";
+                        } else {
+                            nameEl.value = "";
+                            daysEl.value = "";
+                        }
+                    }
+                }
             }
 
             const vegVal = parseInt(veg.value) || 35;
@@ -1946,17 +2063,17 @@
                 if (veg) veg.value = 35;
                 if (gen) gen.value = 80;
                 if (total) total.value = 100;
-                // Vegetatif: NPK 7,14,21,28,35; Jakaba 7,14,21,28,35
                 setVeg([
                     { name: "NPK", days: [7, 14, 21, 28, 35] },
                     { name: "Jakaba", days: [7, 14, 21, 28, 35] },
+                    { name: "", days: [] },
                     { name: "", days: [] }
                 ]);
-                // Generatif: MKP 42,56; KNO3 49,63; Jakaba 42,49,56,63,70
                 setGen([
                     { name: "MKP", days: [42, 56] },
                     { name: "KNO3", days: [49, 63] },
-                    { name: "Jakaba", days: [42, 49, 56, 63, 70] }
+                    { name: "Jakaba", days: [42, 49, 56, 63, 70] },
+                    { name: "", days: [] }
                 ]);
             } else if (preset.value === "jeruk") {
                 if (nameInput) nameInput.value = "Jeruk Purut";
@@ -1967,11 +2084,13 @@
                 setVeg([
                     { name: "Organik", days: [14, 28, 42, 56] },
                     { name: "Jakaba", days: [7, 14, 21, 28, 35, 42, 49, 56] },
+                    { name: "", days: [] },
                     { name: "", days: [] }
                 ]);
                 setGen([
                     { name: "KNO3", days: [70, 84, 98, 112, 126] },
                     { name: "Jakaba", days: [63, 70, 77, 84, 91, 98, 105, 112, 119, 126] },
+                    { name: "", days: [] },
                     { name: "", days: [] }
                 ]);
             } else if (preset.value === "sayur") {
@@ -1983,17 +2102,18 @@
                 setVeg([
                     { name: "AB Mix", days: [5, 10, 15, 20, 25] },
                     { name: "Jakaba", days: [5, 10, 15, 20, 25] },
+                    { name: "", days: [] },
                     { name: "", days: [] }
                 ]);
                 setGen([]);
             } else {
-                // custom -> kosong
                 setVeg([]);
                 setGen([]);
             }
             updateFertilizerLabelsAdd();
         }
 
+        // ===== ADD / EDIT PLANT =====
         function openAddPlantModal() {
             document.getElementById("preset-select").value = "custom";
             document.getElementById("new-plant-name").value = "";
@@ -2004,19 +2124,24 @@
             document.getElementById("phase-veg-end").value = 35;
             document.getElementById("phase-gen-end").value = 80;
             document.getElementById("phase-total-hst").value = 100;
-            // Reset ferts
+            // Reset 4 veg
             document.getElementById("veg-fert-name-1").value = "NPK";
             document.getElementById("veg-fert-days-1").value = "7,14,21,28,35";
             document.getElementById("veg-fert-name-2").value = "Jakaba";
             document.getElementById("veg-fert-days-2").value = "7,14,21,28,35";
             document.getElementById("veg-fert-name-3").value = "";
             document.getElementById("veg-fert-days-3").value = "";
+            document.getElementById("veg-fert-name-4").value = "";
+            document.getElementById("veg-fert-days-4").value = "";
+            // Reset 4 gen
             document.getElementById("gen-fert-name-1").value = "MKP";
             document.getElementById("gen-fert-days-1").value = "42,56";
             document.getElementById("gen-fert-name-2").value = "KNO3";
             document.getElementById("gen-fert-days-2").value = "49,63";
             document.getElementById("gen-fert-name-3").value = "Jakaba";
             document.getElementById("gen-fert-days-3").value = "42,49,56,63,70";
+            document.getElementById("gen-fert-name-4").value = "";
+            document.getElementById("gen-fert-days-4").value = "";
             updateFertilizerLabelsAdd();
             document.getElementById("add-plant-modal").classList.add("active");
         }
@@ -2039,9 +2164,9 @@
             const total = parseInt(totalInput ? totalInput.value : 100) || 100;
             if (!validatePhases(pindah, veg, gen, total)) return;
 
-            // Kumpulkan pupuk vegetatif (name + days)
+            // Kumpulkan 4 pupuk vegetatif
             const vegFerts = [];
-            for (let i = 1; i <= 3; i++) {
+            for (let i = 1; i <= 4; i++) {
                 const nameEl = document.getElementById(`veg-fert-name-${i}`);
                 const daysEl = document.getElementById(`veg-fert-days-${i}`);
                 if (nameEl && daysEl) {
@@ -2053,8 +2178,9 @@
                     }
                 }
             }
+            // Kumpulkan 4 pupuk generatif
             const genFerts = [];
-            for (let i = 1; i <= 3; i++) {
+            for (let i = 1; i <= 4; i++) {
                 const nameEl = document.getElementById(`gen-fert-name-${i}`);
                 const daysEl = document.getElementById(`gen-fert-days-${i}`);
                 if (nameEl && daysEl) {
@@ -2097,11 +2223,12 @@
             document.getElementById("edit-phase-gen-end").value = plant.phases.gen;
             document.getElementById("edit-phase-total-hst").value = plant.totalHst || plant.phases.panen;
 
-            // Isi fertiliser
             const f = plant.fertilizers || { vegetatif: [], generatif: [] };
             const veg = f.vegetatif || [];
             const gen = f.generatif || [];
-            for (let i = 0; i < 3; i++) {
+
+            // Isi 4 vegetatif
+            for (let i = 0; i < 4; i++) {
                 const nameEl = document.getElementById(`edit-veg-fert-name-${i+1}`);
                 const daysEl = document.getElementById(`edit-veg-fert-days-${i+1}`);
                 if (nameEl && daysEl) {
@@ -2112,7 +2239,8 @@
                         daysEl.value = ""; }
                 }
             }
-            for (let i = 0; i < 3; i++) {
+            // Isi 4 generatif
+            for (let i = 0; i < 4; i++) {
                 const nameEl = document.getElementById(`edit-gen-fert-name-${i+1}`);
                 const daysEl = document.getElementById(`edit-gen-fert-days-${i+1}`);
                 if (nameEl && daysEl) {
@@ -2147,8 +2275,9 @@
             const total = parseInt(totalInput ? totalInput.value : 100) || 100;
             if (!validatePhases(pindah, veg, gen, total)) return;
 
+            // Kumpulkan 4 vegetatif
             const vegFerts = [];
-            for (let i = 1; i <= 3; i++) {
+            for (let i = 1; i <= 4; i++) {
                 const nameEl = document.getElementById(`edit-veg-fert-name-${i}`);
                 const daysEl = document.getElementById(`edit-veg-fert-days-${i}`);
                 if (nameEl && daysEl) {
@@ -2160,8 +2289,9 @@
                     }
                 }
             }
+            // Kumpulkan 4 generatif
             const genFerts = [];
-            for (let i = 1; i <= 3; i++) {
+            for (let i = 1; i <= 4; i++) {
                 const nameEl = document.getElementById(`edit-gen-fert-name-${i}`);
                 const daysEl = document.getElementById(`edit-gen-fert-days-${i}`);
                 if (nameEl && daysEl) {
