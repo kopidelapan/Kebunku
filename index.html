@@ -1164,7 +1164,7 @@
         </div>
     </div>
 
-    <!-- MODALS (sama) -->
+    <!-- MODALS -->
     <div class="modal-overlay" id="summary-modal">
         <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
             <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
@@ -1220,16 +1220,26 @@
                 <input type="date" id="new-plant-hst0">
                 <label style="margin-top:10px;">Durasi Fase (HST):</label>
                 <div class="phase-grid">
-                    <div><label>Pindah</label><input type="number" id="phase-pindah-end" value="2" min="1"></div>
-                    <div><label>Vegetatif</label><input type="number" id="phase-veg-end" value="35" min="2"></div>
-                    <div><label>Generatif</label><input type="number" id="phase-gen-end" value="80" min="3"></div>
+                    <div><label>Pindah</label><input type="number" id="phase-pindah-end" value="2" min="1" onchange="updateFertilizerLabelsAdd()"></div>
+                    <div><label>Vegetatif</label><input type="number" id="phase-veg-end" value="35" min="2" onchange="updateFertilizerLabelsAdd()"></div>
+                    <div><label>Generatif</label><input type="number" id="phase-gen-end" value="80" min="3" onchange="updateFertilizerLabelsAdd()"></div>
                     <div><label>Total Panen</label><input type="number" id="phase-total-hst" value="100" min="4"></div>
                 </div>
-                <div class="fertilizer-schedule-box">
-                    <label style="margin-top:0;color:#0369a1;">🧪 Pengingat Pemupukan:</label>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk Utama</label><input type="text" id="fert-name-1" value="NPK"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="fert-interval-1" value="7"></div></div>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Organik / Jakaba</label><input type="text" id="fert-name-3" value="Jakaba"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="fert-interval-3" value="7"></div></div>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk Generatif</label><input type="text" id="fert-name-2" value="MKP"></div><div style="flex:1;"><label style="font-size:.7rem;">Mulai HST</label><input type="number" id="fert-start-2" value="35"></div></div>
+
+                <!-- FERTILIZER VEGETATIF -->
+                <div class="fertilizer-schedule-box" style="margin-top:12px;">
+                    <label id="veg-fert-label-add" style="margin-top:0;color:#0369a1;">🧪 Pemupukan Fase Vegetatif (HST 1 - 35)</label>
+                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="veg-fert-name-1" value="NPK"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="veg-fert-interval-1" value="7"></div></div>
+                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="veg-fert-name-2" value="Jakaba"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="veg-fert-interval-2" value="7"></div></div>
+                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="veg-fert-name-3" value=""></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="veg-fert-interval-3" value="0"></div></div>
+                </div>
+
+                <!-- FERTILIZER GENERATIF -->
+                <div class="fertilizer-schedule-box" style="margin-top:8px;">
+                    <label id="gen-fert-label-add" style="margin-top:0;color:#0369a1;">🧪 Pemupukan Fase Generatif (HST 36 - 80)</label>
+                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="gen-fert-name-1" value="MKP"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="gen-fert-interval-1" value="7"></div></div>
+                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="gen-fert-name-2" value="KNO3"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="gen-fert-interval-2" value="14"></div></div>
+                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="gen-fert-name-3" value="Jakaba"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="gen-fert-interval-3" value="7"></div></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1249,16 +1259,26 @@
                 <label for="edit-plant-hst0">Tanggal Tanam:</label><input type="date" id="edit-plant-hst0">
                 <label style="margin-top:10px;">Durasi Fase:</label>
                 <div class="phase-grid">
-                    <div><label>Pindah</label><input type="number" id="edit-phase-pindah-end" min="1"></div>
-                    <div><label>Vegetatif</label><input type="number" id="edit-phase-veg-end" min="2"></div>
-                    <div><label>Generatif</label><input type="number" id="edit-phase-gen-end" min="3"></div>
+                    <div><label>Pindah</label><input type="number" id="edit-phase-pindah-end" min="1" onchange="updateFertilizerLabelsEdit()"></div>
+                    <div><label>Vegetatif</label><input type="number" id="edit-phase-veg-end" min="2" onchange="updateFertilizerLabelsEdit()"></div>
+                    <div><label>Generatif</label><input type="number" id="edit-phase-gen-end" min="3" onchange="updateFertilizerLabelsEdit()"></div>
                     <div><label>Total Panen</label><input type="number" id="edit-phase-total-hst" min="4"></div>
                 </div>
-                <div class="fertilizer-schedule-box">
-                    <label style="margin-top:0;color:#0369a1;">🧪 Pengingat Pemupukan:</label>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk Utama</label><input type="text" id="edit-fert-name-1"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-fert-interval-1"></div></div>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Organik / Jakaba</label><input type="text" id="edit-fert-name-3"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-fert-interval-3"></div></div>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk Generatif</label><input type="text" id="edit-fert-name-2"></div><div style="flex:1;"><label style="font-size:.7rem;">Mulai HST</label><input type="number" id="edit-fert-start-2"></div></div>
+
+                <!-- FERTILIZER VEGETATIF EDIT -->
+                <div class="fertilizer-schedule-box" style="margin-top:12px;">
+                    <label id="veg-fert-label-edit" style="margin-top:0;color:#0369a1;">🧪 Pemupukan Fase Vegetatif (HST 1 - 35)</label>
+                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="edit-veg-fert-name-1"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-veg-fert-interval-1"></div></div>
+                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="edit-veg-fert-name-2"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-veg-fert-interval-2"></div></div>
+                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="edit-veg-fert-name-3"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-veg-fert-interval-3"></div></div>
+                </div>
+
+                <!-- FERTILIZER GENERATIF EDIT -->
+                <div class="fertilizer-schedule-box" style="margin-top:8px;">
+                    <label id="gen-fert-label-edit" style="margin-top:0;color:#0369a1;">🧪 Pemupukan Fase Generatif (HST 36 - 80)</label>
+                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="edit-gen-fert-name-1"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-gen-fert-interval-1"></div></div>
+                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="edit-gen-fert-name-2"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-gen-fert-interval-2"></div></div>
+                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="edit-gen-fert-name-3"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-gen-fert-interval-3"></div></div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1296,7 +1316,35 @@
             activeHst = null,
             isSyncing = false;
 
-        // ===== PERBAIKAN: gunakan tanggal lokal, bukan UTC =====
+        // ===== MIGRASI DATA FERTILIZER LAMA KE BARU =====
+        function migrateFertilizers(plant) {
+            if (!plant.fertilizers) return;
+            if (plant.fertilizers.vegetatif && plant.fertilizers.generatif) return;
+            const old = plant.fertilizers;
+            const veg = [];
+            const gen = [];
+            if (old.name1 && old.interval1 > 0) veg.push({ name: old.name1, interval: old.interval1 });
+            if (old.name3 && old.interval3 > 0) veg.push({ name: old.name3, interval: old.interval3 });
+            if (old.name2 && old.start2 > 0) {
+                const interval = old.interval1 || 7;
+                gen.push({ name: old.name2, interval: interval });
+            }
+            // Tambahkan Jakaba ke generatif jika tidak ada dan di vegetatif ada
+            const hasJakabaVeg = veg.some(v => v.name.toLowerCase() === 'jakaba');
+            const hasJakabaGen = gen.some(v => v.name.toLowerCase() === 'jakaba');
+            if (hasJakabaVeg && !hasJakabaGen) {
+                gen.push({ name: 'Jakaba', interval: 7 });
+            }
+            plant.fertilizers = { vegetatif: veg, generatif: gen };
+        }
+
+        function migrateAllFertilizers() {
+            for (let id in plantsData) {
+                migrateFertilizers(plantsData[id]);
+            }
+        }
+
+        // ===== FUNGSI TANGGAL =====
         function getTodayStr() {
             const d = new Date();
             const year = d.getFullYear();
@@ -1328,29 +1376,30 @@
             return "fase-panen";
         }
 
+        // ===== FERTILIZER REMINDER (BARU) =====
         function getFertilizerReminder(hst, plant) {
             if (!plant.fertilizers) return null;
             const f = plant.fertilizers;
+            const vegEnd = plant.phases.veg;
+            const isVegetatif = hst <= vegEnd;
+            const list = isVegetatif ? f.vegetatif : f.generatif;
+            if (!list || list.length === 0) return null;
             let reminders = [];
-            if (f.name1 && f.interval1 > 0 && hst % f.interval1 === 0) reminders.push(f.name1);
-            if (f.name3 && f.interval3 > 0 && hst % f.interval3 === 0) reminders.push(f.name3);
-            if (f.name2 && f.start2 > 0 && hst >= f.start2) {
-                const interval2 = f.interval1 || 7;
-                if ((hst - f.start2) % interval2 === 0) reminders.push(f.name2);
-            }
+            list.forEach(item => {
+                if (item.name && item.interval > 0 && hst % item.interval === 0) {
+                    reminders.push(item.name);
+                }
+            });
             return reminders.length > 0 ? reminders.join(" + ") : null;
         }
 
+        // ===== TUGAS HARI INI =====
         function getTodayTasks(includeFutureDays = 3) {
-            const today = getTodayStr();
             const tasks = [];
             const date = new Date();
             for (let i = 0; i <= includeFutureDays; i++) {
                 const d = new Date(date);
                 d.setDate(date.getDate() + i);
-                const dateStr = d.toISOString().split('T')[0]; // tetap pakai UTC untuk pencocokan? Lebih baik pakai lokal juga.
-                // Tapi kita sudah pakai getTodayStr() lokal, untuk tanggal lain kita buat manual.
-                // Lebih baik gunakan fungsi untuk menghasilkan string tanggal lokal.
                 const year = d.getFullYear();
                 const month = String(d.getMonth() + 1).padStart(2, '0');
                 const day = String(d.getDate()).padStart(2, '0');
@@ -1378,6 +1427,7 @@
             return true;
         }
 
+        // ===== STATUS =====
         function setStatus(status, text) {
             const dot = document.getElementById('statusDot'),
                 txt = document.getElementById('statusText');
@@ -1390,6 +1440,7 @@
                 txt.innerText = text || 'Error'; }
         }
 
+        // ===== FIREBASE SAVE/LOAD =====
         async function saveToFirebase() {
             if (!firebaseReady || !db) {
                 localStorage.setItem('plantsData_cache', JSON.stringify(plantsData));
@@ -1424,6 +1475,7 @@
                     const data = doc.data();
                     plantsData = data.data || {};
                     currentPlantId = data.currentPlantId || Object.keys(plantsData)[0] || null;
+                    migrateAllFertilizers();
                     localStorage.setItem('plantsData_cache', JSON.stringify(plantsData));
                     localStorage.setItem('currentPlantId_cache', currentPlantId);
                     setStatus('online', 'Dimuat dari cloud');
@@ -1442,6 +1494,7 @@
             if (cached) {
                 try {
                     plantsData = JSON.parse(cached);
+                    migrateAllFertilizers();
                     currentPlantId = cachedId || Object.keys(plantsData)[0] || null;
                     setStatus('offline', 'Data cache (offline)');
                     return true;
@@ -1462,7 +1515,26 @@
             if (firebaseReady) saveTimeout = setTimeout(() => saveToFirebase(), 800);
         }
 
-        // ===== RENDER FUNCTIONS =====
+        // ===== UPDATE LABEL FERTILIZER DINAMIS =====
+        function updateFertilizerLabelsAdd() {
+            const veg = parseInt(document.getElementById('phase-veg-end').value) || 35;
+            const gen = parseInt(document.getElementById('phase-gen-end').value) || 80;
+            const vegLabel = document.getElementById('veg-fert-label-add');
+            const genLabel = document.getElementById('gen-fert-label-add');
+            if (vegLabel) vegLabel.innerText = `🧪 Pemupukan Fase Vegetatif (HST 1 - ${veg})`;
+            if (genLabel) genLabel.innerText = `🧪 Pemupukan Fase Generatif (HST ${veg+1} - ${gen})`;
+        }
+
+        function updateFertilizerLabelsEdit() {
+            const veg = parseInt(document.getElementById('edit-phase-veg-end').value) || 35;
+            const gen = parseInt(document.getElementById('edit-phase-gen-end').value) || 80;
+            const vegLabel = document.getElementById('veg-fert-label-edit');
+            const genLabel = document.getElementById('gen-fert-label-edit');
+            if (vegLabel) vegLabel.innerText = `🧪 Pemupukan Fase Vegetatif (HST 1 - ${veg})`;
+            if (genLabel) genLabel.innerText = `🧪 Pemupukan Fase Generatif (HST ${veg+1} - ${gen})`;
+        }
+
+        // ===== RENDER =====
         function populatePlantSelector() {
             const select = document.getElementById("plant-select");
             if (!select) return;
@@ -1536,7 +1608,6 @@
             for (let hst = start; hst <= end; hst++) {
                 const curDate = new Date(hst0Date);
                 curDate.setDate(hst0Date.getDate() + (hst - 1));
-                // Gunakan tanggal lokal untuk perbandingan
                 const year = curDate.getFullYear();
                 const month = String(curDate.getMonth() + 1).padStart(2, '0');
                 const day = String(curDate.getDate()).padStart(2, '0');
@@ -1627,7 +1698,7 @@
             document.getElementById("stat-harvest").innerText = (hst >= 1 && hst <= totalHst) ? Math.max(0, totalHst - hst) +
                 ' hari' : '-';
             document.getElementById("stat-notes").innerText = Object.keys(plant.comments).length;
-            const tasks = getTodayTasks(0).filter(t => t.plantName === plant.name); // hanya hari ini
+            const tasks = getTodayTasks(0).filter(t => t.plantName === plant.name);
             document.getElementById("stat-tasks").innerText = tasks.length;
             drawGrowthChart(plant);
         }
@@ -1686,7 +1757,7 @@
         function renderTodayTasks() {
             const container = document.getElementById('task-list');
             if (!container) return;
-            const tasks = getTodayTasks(3); // hari ini + 3 hari ke depan
+            const tasks = getTodayTasks(3);
             if (tasks.length === 0) {
                 container.innerHTML =
                     '<div class="text-green-600 dark:text-green-400">✅ Tidak ada tugas pemeliharaan dalam 3 hari ke depan.</div>';
@@ -1768,50 +1839,75 @@
             const veg = document.getElementById("phase-veg-end");
             const gen = document.getElementById("phase-gen-end");
             const total = document.getElementById("phase-total-hst");
-            const fName1 = document.getElementById("fert-name-1");
-            const fInt1 = document.getElementById("fert-interval-1");
-            const fName2 = document.getElementById("fert-name-2");
-            const fStart2 = document.getElementById("fert-start-2");
-            const fName3 = document.getElementById("fert-name-3");
-            const fInt3 = document.getElementById("fert-interval-3");
             const nameInput = document.getElementById("new-plant-name");
+            // Veg ferts
+            const v1n = document.getElementById("veg-fert-name-1");
+            const v1i = document.getElementById("veg-fert-interval-1");
+            const v2n = document.getElementById("veg-fert-name-2");
+            const v2i = document.getElementById("veg-fert-interval-2");
+            const v3n = document.getElementById("veg-fert-name-3");
+            const v3i = document.getElementById("veg-fert-interval-3");
+            // Gen ferts
+            const g1n = document.getElementById("gen-fert-name-1");
+            const g1i = document.getElementById("gen-fert-interval-1");
+            const g2n = document.getElementById("gen-fert-name-2");
+            const g2i = document.getElementById("gen-fert-interval-2");
+            const g3n = document.getElementById("gen-fert-name-3");
+            const g3i = document.getElementById("gen-fert-interval-3");
+
+            function setVeg(arr) {
+                if (arr.length > 0) { v1n.value = arr[0].name || "";
+                    v1i.value = arr[0].interval || 0; } else { v1n.value = "";
+                    v1i.value = 0; }
+                if (arr.length > 1) { v2n.value = arr[1].name || "";
+                    v2i.value = arr[1].interval || 0; } else { v2n.value = "";
+                    v2i.value = 0; }
+                if (arr.length > 2) { v3n.value = arr[2].name || "";
+                    v3i.value = arr[2].interval || 0; } else { v3n.value = "";
+                    v3i.value = 0; }
+            }
+
+            function setGen(arr) {
+                if (arr.length > 0) { g1n.value = arr[0].name || "";
+                    g1i.value = arr[0].interval || 0; } else { g1n.value = "";
+                    g1i.value = 0; }
+                if (arr.length > 1) { g2n.value = arr[1].name || "";
+                    g2i.value = arr[1].interval || 0; } else { g2n.value = "";
+                    g2i.value = 0; }
+                if (arr.length > 2) { g3n.value = arr[2].name || "";
+                    g3i.value = arr[2].interval || 0; } else { g3n.value = "";
+                    g3i.value = 0; }
+            }
+
             if (preset.value === "cabai") {
                 if (nameInput) nameInput.value = "Cabai / Tomat";
                 if (pindah) pindah.value = 2;
                 if (veg) veg.value = 35;
                 if (gen) gen.value = 80;
                 if (total) total.value = 100;
-                if (fName1) fName1.value = "NPK";
-                if (fInt1) fInt1.value = 7;
-                if (fName2) fName2.value = "MKP";
-                if (fStart2) fStart2.value = 35;
-                if (fName3) fName3.value = "Jakaba";
-                if (fInt3) fInt3.value = 7;
+                setVeg([{ name: "NPK", interval: 7 }, { name: "Jakaba", interval: 7 }, { name: "", interval: 0 }]);
+                setGen([{ name: "MKP", interval: 7 }, { name: "KNO3", interval: 14 }, { name: "Jakaba", interval: 7 }]);
             } else if (preset.value === "jeruk") {
                 if (nameInput) nameInput.value = "Jeruk Purut";
                 if (pindah) pindah.value = 7;
                 if (veg) veg.value = 60;
                 if (gen) gen.value = 130;
                 if (total) total.value = 180;
-                if (fName1) fName1.value = "Organik";
-                if (fInt1) fInt1.value = 14;
-                if (fName2) fName2.value = "KNO3";
-                if (fStart2) fStart2.value = 61;
-                if (fName3) fName3.value = "Jakaba";
-                if (fInt3) fInt3.value = 7;
+                setVeg([{ name: "Organik", interval: 14 }, { name: "Jakaba", interval: 7 }, { name: "", interval: 0 }]);
+                setGen([{ name: "KNO3", interval: 14 }, { name: "Jakaba", interval: 7 }, { name: "", interval: 0 }]);
             } else if (preset.value === "sayur") {
                 if (nameInput) nameInput.value = "Sayur Daun";
                 if (pindah) pindah.value = 3;
                 if (veg) veg.value = 25;
                 if (gen) gen.value = 35;
                 if (total) total.value = 45;
-                if (fName1) fName1.value = "AB Mix";
-                if (fInt1) fInt1.value = 5;
-                if (fName2) fName2.value = "";
-                if (fStart2) fStart2.value = "";
-                if (fName3) fName3.value = "Jakaba";
-                if (fInt3) fInt3.value = 5;
+                setVeg([{ name: "AB Mix", interval: 5 }, { name: "Jakaba", interval: 5 }, { name: "", interval: 0 }]);
+                setGen([{ name: "", interval: 0 }, { name: "", interval: 0 }, { name: "", interval: 0 }]);
+            } else {
+                setVeg([{ name: "NPK", interval: 7 }, { name: "Jakaba", interval: 7 }, { name: "", interval: 0 }]);
+                setGen([{ name: "MKP", interval: 7 }, { name: "KNO3", interval: 14 }, { name: "Jakaba", interval: 7 }]);
             }
+            updateFertilizerLabelsAdd();
         }
 
         function openAddPlantModal() {
@@ -1824,12 +1920,20 @@
             document.getElementById("phase-veg-end").value = 35;
             document.getElementById("phase-gen-end").value = 80;
             document.getElementById("phase-total-hst").value = 100;
-            document.getElementById("fert-name-1").value = "NPK";
-            document.getElementById("fert-interval-1").value = 7;
-            document.getElementById("fert-name-2").value = "MKP";
-            document.getElementById("fert-start-2").value = 35;
-            document.getElementById("fert-name-3").value = "Jakaba";
-            document.getElementById("fert-interval-3").value = 7;
+            // Reset ferts
+            document.getElementById("veg-fert-name-1").value = "NPK";
+            document.getElementById("veg-fert-interval-1").value = 7;
+            document.getElementById("veg-fert-name-2").value = "Jakaba";
+            document.getElementById("veg-fert-interval-2").value = 7;
+            document.getElementById("veg-fert-name-3").value = "";
+            document.getElementById("veg-fert-interval-3").value = 0;
+            document.getElementById("gen-fert-name-1").value = "MKP";
+            document.getElementById("gen-fert-interval-1").value = 7;
+            document.getElementById("gen-fert-name-2").value = "KNO3";
+            document.getElementById("gen-fert-interval-2").value = 14;
+            document.getElementById("gen-fert-name-3").value = "Jakaba";
+            document.getElementById("gen-fert-interval-3").value = 7;
+            updateFertilizerLabelsAdd();
             document.getElementById("add-plant-modal").classList.add("active");
         }
 
@@ -1845,17 +1949,34 @@
             const vegInput = document.getElementById("phase-veg-end");
             const genInput = document.getElementById("phase-gen-end");
             const totalInput = document.getElementById("phase-total-hst");
-            const fName1 = document.getElementById("fert-name-1");
-            const fInt1 = document.getElementById("fert-interval-1");
-            const fName2 = document.getElementById("fert-name-2");
-            const fStart2 = document.getElementById("fert-start-2");
-            const fName3 = document.getElementById("fert-name-3");
-            const fInt3 = document.getElementById("fert-interval-3");
             const pindah = parseInt(pindahInput ? pindahInput.value : 2) || 2;
             const veg = parseInt(vegInput ? vegInput.value : 35) || 35;
             const gen = parseInt(genInput ? genInput.value : 80) || 80;
             const total = parseInt(totalInput ? totalInput.value : 100) || 100;
             if (!validatePhases(pindah, veg, gen, total)) return;
+
+            // Kumpulkan pupuk vegetatif
+            const vegFerts = [];
+            for (let i = 1; i <= 3; i++) {
+                const nameEl = document.getElementById(`veg-fert-name-${i}`);
+                const intEl = document.getElementById(`veg-fert-interval-${i}`);
+                if (nameEl && intEl) {
+                    const n = nameEl.value.trim();
+                    const iv = parseInt(intEl.value) || 0;
+                    if (n && iv > 0) vegFerts.push({ name: n, interval: iv });
+                }
+            }
+            const genFerts = [];
+            for (let i = 1; i <= 3; i++) {
+                const nameEl = document.getElementById(`gen-fert-name-${i}`);
+                const intEl = document.getElementById(`gen-fert-interval-${i}`);
+                if (nameEl && intEl) {
+                    const n = nameEl.value.trim();
+                    const iv = parseInt(intEl.value) || 0;
+                    if (n && iv > 0) genFerts.push({ name: n, interval: iv });
+                }
+            }
+
             const newId = "plant_" + Date.now();
             plantsData[newId] = {
                 name,
@@ -1864,14 +1985,7 @@
                 hst0: hst0Input ? hst0Input.value : getTodayStr(),
                 totalHst: total,
                 phases: { pindah, veg, gen, panen: total },
-                fertilizers: {
-                    name1: fName1 ? fName1.value.trim() : "",
-                    interval1: parseInt(fInt1 ? fInt1.value : 0) || 0,
-                    name2: fName2 ? fName2.value.trim() : "",
-                    start2: parseInt(fStart2 ? fStart2.value : 0) || 0,
-                    name3: fName3 ? fName3.value.trim() : "",
-                    interval3: parseInt(fInt3 ? fInt3.value : 0) || 0
-                },
+                fertilizers: { vegetatif: vegFerts, generatif: genFerts },
                 comments: {}
             };
             currentPlantId = newId;
@@ -1892,13 +2006,30 @@
             document.getElementById("edit-phase-veg-end").value = plant.phases.veg;
             document.getElementById("edit-phase-gen-end").value = plant.phases.gen;
             document.getElementById("edit-phase-total-hst").value = plant.totalHst || plant.phases.panen;
-            const f = plant.fertilizers || {};
-            document.getElementById("edit-fert-name-1").value = f.name1 || "";
-            document.getElementById("edit-fert-interval-1").value = f.interval1 || "";
-            document.getElementById("edit-fert-name-2").value = f.name2 || "";
-            document.getElementById("edit-fert-start-2").value = f.start2 || "";
-            document.getElementById("edit-fert-name-3").value = f.name3 || "Jakaba";
-            document.getElementById("edit-fert-interval-3").value = f.interval3 || "";
+
+            // Isi fertiliser
+            const f = plant.fertilizers || { vegetatif: [], generatif: [] };
+            const veg = f.vegetatif || [];
+            const gen = f.generatif || [];
+            for (let i = 0; i < 3; i++) {
+                const nameEl = document.getElementById(`edit-veg-fert-name-${i+1}`);
+                const intEl = document.getElementById(`edit-veg-fert-interval-${i+1}`);
+                if (nameEl && intEl) {
+                    if (i < veg.length) { nameEl.value = veg[i].name || "";
+                        intEl.value = veg[i].interval || 0; } else { nameEl.value = "";
+                        intEl.value = 0; }
+                }
+            }
+            for (let i = 0; i < 3; i++) {
+                const nameEl = document.getElementById(`edit-gen-fert-name-${i+1}`);
+                const intEl = document.getElementById(`edit-gen-fert-interval-${i+1}`);
+                if (nameEl && intEl) {
+                    if (i < gen.length) { nameEl.value = gen[i].name || "";
+                        intEl.value = gen[i].interval || 0; } else { nameEl.value = "";
+                        intEl.value = 0; }
+                }
+            }
+            updateFertilizerLabelsEdit();
             document.getElementById("edit-plant-modal").classList.add("active");
         }
 
@@ -1916,31 +2047,40 @@
             const vegInput = document.getElementById("edit-phase-veg-end");
             const genInput = document.getElementById("edit-phase-gen-end");
             const totalInput = document.getElementById("edit-phase-total-hst");
-            const fName1 = document.getElementById("edit-fert-name-1");
-            const fInt1 = document.getElementById("edit-fert-interval-1");
-            const fName2 = document.getElementById("edit-fert-name-2");
-            const fStart2 = document.getElementById("edit-fert-start-2");
-            const fName3 = document.getElementById("edit-fert-name-3");
-            const fInt3 = document.getElementById("edit-fert-interval-3");
             const pindah = parseInt(pindahInput ? pindahInput.value : 2) || 2;
             const veg = parseInt(vegInput ? vegInput.value : 35) || 35;
             const gen = parseInt(genInput ? genInput.value : 80) || 80;
             const total = parseInt(totalInput ? totalInput.value : 100) || 100;
             if (!validatePhases(pindah, veg, gen, total)) return;
+
+            const vegFerts = [];
+            for (let i = 1; i <= 3; i++) {
+                const nameEl = document.getElementById(`edit-veg-fert-name-${i}`);
+                const intEl = document.getElementById(`edit-veg-fert-interval-${i}`);
+                if (nameEl && intEl) {
+                    const n = nameEl.value.trim();
+                    const iv = parseInt(intEl.value) || 0;
+                    if (n && iv > 0) vegFerts.push({ name: n, interval: iv });
+                }
+            }
+            const genFerts = [];
+            for (let i = 1; i <= 3; i++) {
+                const nameEl = document.getElementById(`edit-gen-fert-name-${i}`);
+                const intEl = document.getElementById(`edit-gen-fert-interval-${i}`);
+                if (nameEl && intEl) {
+                    const n = nameEl.value.trim();
+                    const iv = parseInt(intEl.value) || 0;
+                    if (n && iv > 0) genFerts.push({ name: n, interval: iv });
+                }
+            }
+
             plant.name = name;
             plant.group = group ? group.value : "Kebun";
             plant.photo = photo ? photo.value.trim() : "";
             plant.hst0 = hst0Input ? hst0Input.value : getTodayStr();
             plant.totalHst = total;
             plant.phases = { pindah, veg, gen, panen: total };
-            plant.fertilizers = {
-                name1: fName1 ? fName1.value.trim() : "",
-                interval1: parseInt(fInt1 ? fInt1.value : 0) || 0,
-                name2: fName2 ? fName2.value.trim() : "",
-                start2: parseInt(fStart2 ? fStart2.value : 0) || 0,
-                name3: fName3 ? fName3.value.trim() : "",
-                interval3: parseInt(fInt3 ? fInt3.value : 0) || 0
-            };
+            plant.fertilizers = { vegetatif: vegFerts, generatif: genFerts };
             for (let hst in plant.comments) plant.comments[hst].phase = getPhaseName(parseInt(hst), plant);
             autoSave();
             closeModal("edit-plant-modal");
@@ -2076,6 +2216,7 @@
                     const data = JSON.parse(e.target.result);
                     if (confirm('Data akan menggantikan semua data saat ini. Lanjutkan?')) {
                         plantsData = data;
+                        migrateAllFertilizers();
                         currentPlantId = Object.keys(plantsData)[0] || "plant_1";
                         autoSave();
                         populatePlantSelector();
@@ -2108,7 +2249,7 @@
         async function requestNotification() {
             if ('Notification' in window && Notification.permission === 'default') await Notification.requestPermission();
             if (Notification.permission === 'granted') {
-                const tasks = getTodayTasks(0); // hanya hari ini
+                const tasks = getTodayTasks(0);
                 if (tasks.length > 0) new Notification('🌱 Jadwal Pemeliharaan Tanaman', { body: tasks.map(t =>
                         `${t.plantName}: ${t.fert}`).join('\n'), icon: '🌿' });
             }
@@ -2140,14 +2281,33 @@
             if (!loaded || Object.keys(plantsData).length === 0) {
                 const todayStr = getTodayStr();
                 plantsData = {
-                    "plant_1": { name: "Cabai (Pot Utama)", group: "Pot", photo: "", hst0: todayStr, totalHst: 100,
-                        phases: { pindah: 2, veg: 35, gen: 80, panen: 100 }, fertilizers: { name1: "NPK",
-                            interval1: 7, name2: "MKP", start2: 35, name3: "Jakaba", interval3: 7 },
-                        comments: {} },
-                    "plant_2": { name: "Jeruk Purut", group: "Kebun", photo: "", hst0: todayStr, totalHst: 180,
-                        phases: { pindah: 7, veg: 60, gen: 130, panen: 180 }, fertilizers: { name1: "Organik",
-                            interval1: 14, name2: "KNO3", start2: 61, name3: "Jakaba", interval3: 7 },
-                        comments: {} }
+                    "plant_1": {
+                        name: "Cabai (Pot Utama)",
+                        group: "Pot",
+                        photo: "",
+                        hst0: todayStr,
+                        totalHst: 100,
+                        phases: { pindah: 2, veg: 35, gen: 80, panen: 100 },
+                        fertilizers: {
+                            vegetatif: [{ name: "NPK", interval: 7 }, { name: "Jakaba", interval: 7 }],
+                            generatif: [{ name: "MKP", interval: 7 }, { name: "KNO3", interval: 14 }, { name: "Jakaba",
+                                interval: 7 }]
+                        },
+                        comments: {}
+                    },
+                    "plant_2": {
+                        name: "Jeruk Purut",
+                        group: "Kebun",
+                        photo: "",
+                        hst0: todayStr,
+                        totalHst: 180,
+                        phases: { pindah: 7, veg: 60, gen: 130, panen: 180 },
+                        fertilizers: {
+                            vegetatif: [{ name: "Organik", interval: 14 }, { name: "Jakaba", interval: 7 }],
+                            generatif: [{ name: "KNO3", interval: 14 }, { name: "Jakaba", interval: 7 }]
+                        },
+                        comments: {}
+                    }
                 };
                 currentPlantId = "plant_1";
                 if (firebaseReady) await saveToFirebase();
