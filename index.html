@@ -13,6 +13,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js">
     </script>
     <style>
+        /* semua style sama seperti sebelumnya, tidak diubah */
         * {
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -69,7 +70,6 @@
             color: #5eead4 !important;
         }
 
-        /* ===== HEADER KOMPAK ===== */
         .header {
             margin-bottom: 14px;
             border-bottom: 2px solid #3b82f6;
@@ -231,7 +231,6 @@
             }
         }
 
-        /* ===== SISA STYLE ===== */
         .plant-bar {
             background: #fff;
             padding: 12px;
@@ -1202,6 +1201,7 @@
         </div>
     </div>
 
+    <!-- MODAL TAMBAH TANAMAN (dengan jadwal hari) -->
     <div class="modal-overlay" id="add-plant-modal">
         <div class="modal-box">
             <div class="modal-header"><h3>Tambah Tanaman</h3><button class="modal-close" onclick="closeModal('add-plant-modal')">&times;</button></div>
@@ -1229,17 +1229,35 @@
                 <!-- FERTILIZER VEGETATIF -->
                 <div class="fertilizer-schedule-box" style="margin-top:12px;">
                     <label id="veg-fert-label-add" style="margin-top:0;color:#0369a1;">🧪 Pemupukan Fase Vegetatif (HST 1 - 35)</label>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="veg-fert-name-1" value="NPK"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="veg-fert-interval-1" value="7"></div></div>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="veg-fert-name-2" value="Jakaba"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="veg-fert-interval-2" value="7"></div></div>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="veg-fert-name-3" value=""></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="veg-fert-interval-3" value="0"></div></div>
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="veg-fert-name-1" value="NPK"></div>
+                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="veg-fert-days-1" value="7,14,21,28,35" placeholder="pisah koma"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="veg-fert-name-2" value="Jakaba"></div>
+                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="veg-fert-days-2" value="7,14,21,28,35" placeholder="pisah koma"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="veg-fert-name-3" value=""></div>
+                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="veg-fert-days-3" value="" placeholder="pisah koma"></div>
+                    </div>
                 </div>
 
                 <!-- FERTILIZER GENERATIF -->
                 <div class="fertilizer-schedule-box" style="margin-top:8px;">
                     <label id="gen-fert-label-add" style="margin-top:0;color:#0369a1;">🧪 Pemupukan Fase Generatif (HST 36 - 80)</label>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="gen-fert-name-1" value="MKP"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="gen-fert-interval-1" value="7"></div></div>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="gen-fert-name-2" value="KNO3"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="gen-fert-interval-2" value="14"></div></div>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="gen-fert-name-3" value="Jakaba"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="gen-fert-interval-3" value="7"></div></div>
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="gen-fert-name-1" value="MKP"></div>
+                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="gen-fert-days-1" value="42,56" placeholder="pisah koma"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="gen-fert-name-2" value="KNO3"></div>
+                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="gen-fert-days-2" value="49,63" placeholder="pisah koma"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="gen-fert-name-3" value="Jakaba"></div>
+                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="gen-fert-days-3" value="42,49,56,63,70" placeholder="pisah koma"></div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1249,6 +1267,7 @@
         </div>
     </div>
 
+    <!-- MODAL EDIT TANAMAN -->
     <div class="modal-overlay" id="edit-plant-modal">
         <div class="modal-box">
             <div class="modal-header"><h3>Edit Tanaman</h3><button class="modal-close" onclick="closeModal('edit-plant-modal')">&times;</button></div>
@@ -1268,17 +1287,35 @@
                 <!-- FERTILIZER VEGETATIF EDIT -->
                 <div class="fertilizer-schedule-box" style="margin-top:12px;">
                     <label id="veg-fert-label-edit" style="margin-top:0;color:#0369a1;">🧪 Pemupukan Fase Vegetatif (HST 1 - 35)</label>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="edit-veg-fert-name-1"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-veg-fert-interval-1"></div></div>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="edit-veg-fert-name-2"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-veg-fert-interval-2"></div></div>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="edit-veg-fert-name-3"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-veg-fert-interval-3"></div></div>
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="edit-veg-fert-name-1"></div>
+                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="edit-veg-fert-days-1" placeholder="pisah koma"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="edit-veg-fert-name-2"></div>
+                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="edit-veg-fert-days-2" placeholder="pisah koma"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="edit-veg-fert-name-3"></div>
+                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="edit-veg-fert-days-3" placeholder="pisah koma"></div>
+                    </div>
                 </div>
 
                 <!-- FERTILIZER GENERATIF EDIT -->
                 <div class="fertilizer-schedule-box" style="margin-top:8px;">
                     <label id="gen-fert-label-edit" style="margin-top:0;color:#0369a1;">🧪 Pemupukan Fase Generatif (HST 36 - 80)</label>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="edit-gen-fert-name-1"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-gen-fert-interval-1"></div></div>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="edit-gen-fert-name-2"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-gen-fert-interval-2"></div></div>
-                    <div style="display:flex;gap:8px;margin-top:6px;"><div style="flex:2;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="edit-gen-fert-name-3"></div><div style="flex:1;"><label style="font-size:.7rem;">Interval</label><input type="number" id="edit-gen-fert-interval-3"></div></div>
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 1</label><input type="text" id="edit-gen-fert-name-1"></div>
+                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="edit-gen-fert-days-1" placeholder="pisah koma"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 2</label><input type="text" id="edit-gen-fert-name-2"></div>
+                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="edit-gen-fert-days-2" placeholder="pisah koma"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;">
+                        <div style="flex:2;min-width:120px;"><label style="font-size:.7rem;">Pupuk 3</label><input type="text" id="edit-gen-fert-name-3"></div>
+                        <div style="flex:3;min-width:150px;"><label style="font-size:.7rem;">Jadwal Hari (HST)</label><input type="text" id="edit-gen-fert-days-3" placeholder="pisah koma"></div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1316,24 +1353,45 @@
             activeHst = null,
             isSyncing = false;
 
-        // ===== MIGRASI DATA FERTILIZER LAMA KE BARU =====
+        // ===== MIGRASI DATA FERTILIZER LAMA KE BARU (interval → days) =====
         function migrateFertilizers(plant) {
-            if (!plant.fertilizers) return;
-            if (plant.fertilizers.vegetatif && plant.fertilizers.generatif) return;
+            if (!plant.fertilizers) {
+                plant.fertilizers = { vegetatif: [], generatif: [] };
+                return;
+            }
+            // Jika sudah punya days, lewati
+            if (plant.fertilizers.vegetatif && plant.fertilizers.vegetatif.length > 0 && plant.fertilizers.vegetatif[0].days) {
+                return;
+            }
             const old = plant.fertilizers;
-            const veg = [];
-            const gen = [];
-            if (old.name1 && old.interval1 > 0) veg.push({ name: old.name1, interval: old.interval1 });
-            if (old.name3 && old.interval3 > 0) veg.push({ name: old.name3, interval: old.interval3 });
+            const vegEnd = plant.phases.veg;
+            const genEnd = plant.phases.gen;
+            const veg = [],
+                gen = [];
+
+            if (old.name1 && old.interval1 > 0) {
+                const days = [];
+                for (let d = 1; d <= vegEnd; d += old.interval1) days.push(d);
+                veg.push({ name: old.name1, days });
+            }
+            if (old.name3 && old.interval3 > 0) {
+                const days = [];
+                for (let d = 1; d <= vegEnd; d += old.interval3) days.push(d);
+                veg.push({ name: old.name3, days });
+            }
             if (old.name2 && old.start2 > 0) {
                 const interval = old.interval1 || 7;
-                gen.push({ name: old.name2, interval: interval });
+                const days = [];
+                for (let d = old.start2; d <= genEnd; d += interval) days.push(d);
+                gen.push({ name: old.name2, days });
             }
-            // Tambahkan Jakaba ke generatif jika tidak ada dan di vegetatif ada
-            const hasJakabaVeg = veg.some(v => v.name.toLowerCase() === 'jakaba');
-            const hasJakabaGen = gen.some(v => v.name.toLowerCase() === 'jakaba');
-            if (hasJakabaVeg && !hasJakabaGen) {
-                gen.push({ name: 'Jakaba', interval: 7 });
+            // Tambahkan Jakaba ke gen jika ada di veg dan tidak ada di gen
+            const vegNames = veg.map(v => v.name.toLowerCase());
+            const genNames = gen.map(v => v.name.toLowerCase());
+            if (vegNames.includes('jakaba') && !genNames.includes('jakaba')) {
+                const days = [];
+                for (let d = vegEnd + 1; d <= genEnd; d += 7) days.push(d);
+                gen.push({ name: 'Jakaba', days });
             }
             plant.fertilizers = { vegetatif: veg, generatif: gen };
         }
@@ -1376,7 +1434,7 @@
             return "fase-panen";
         }
 
-        // ===== FERTILIZER REMINDER (BARU) =====
+        // ===== FERTILIZER REMINDER (berdasarkan days) =====
         function getFertilizerReminder(hst, plant) {
             if (!plant.fertilizers) return null;
             const f = plant.fertilizers;
@@ -1386,7 +1444,7 @@
             if (!list || list.length === 0) return null;
             let reminders = [];
             list.forEach(item => {
-                if (item.name && item.interval > 0 && hst % item.interval === 0) {
+                if (item.days && item.days.includes(hst)) {
                     reminders.push(item.name);
                 }
             });
@@ -1831,7 +1889,7 @@
             renderTable();
         }
 
-        // ===== ADD / EDIT PLANT =====
+        // ===== ADD / EDIT PLANT (dengan days) =====
         function applyPreset() {
             const preset = document.getElementById("preset-select");
             if (!preset) return;
@@ -1842,42 +1900,45 @@
             const nameInput = document.getElementById("new-plant-name");
             // Veg ferts
             const v1n = document.getElementById("veg-fert-name-1");
-            const v1i = document.getElementById("veg-fert-interval-1");
+            const v1d = document.getElementById("veg-fert-days-1");
             const v2n = document.getElementById("veg-fert-name-2");
-            const v2i = document.getElementById("veg-fert-interval-2");
+            const v2d = document.getElementById("veg-fert-days-2");
             const v3n = document.getElementById("veg-fert-name-3");
-            const v3i = document.getElementById("veg-fert-interval-3");
+            const v3d = document.getElementById("veg-fert-days-3");
             // Gen ferts
             const g1n = document.getElementById("gen-fert-name-1");
-            const g1i = document.getElementById("gen-fert-interval-1");
+            const g1d = document.getElementById("gen-fert-days-1");
             const g2n = document.getElementById("gen-fert-name-2");
-            const g2i = document.getElementById("gen-fert-interval-2");
+            const g2d = document.getElementById("gen-fert-days-2");
             const g3n = document.getElementById("gen-fert-name-3");
-            const g3i = document.getElementById("gen-fert-interval-3");
+            const g3d = document.getElementById("gen-fert-days-3");
 
             function setVeg(arr) {
                 if (arr.length > 0) { v1n.value = arr[0].name || "";
-                    v1i.value = arr[0].interval || 0; } else { v1n.value = "";
-                    v1i.value = 0; }
+                    v1d.value = arr[0].days ? arr[0].days.join(',') : ""; } else { v1n.value = "";
+                    v1d.value = ""; }
                 if (arr.length > 1) { v2n.value = arr[1].name || "";
-                    v2i.value = arr[1].interval || 0; } else { v2n.value = "";
-                    v2i.value = 0; }
+                    v2d.value = arr[1].days ? arr[1].days.join(',') : ""; } else { v2n.value = "";
+                    v2d.value = ""; }
                 if (arr.length > 2) { v3n.value = arr[2].name || "";
-                    v3i.value = arr[2].interval || 0; } else { v3n.value = "";
-                    v3i.value = 0; }
+                    v3d.value = arr[2].days ? arr[2].days.join(',') : ""; } else { v3n.value = "";
+                    v3d.value = ""; }
             }
 
             function setGen(arr) {
                 if (arr.length > 0) { g1n.value = arr[0].name || "";
-                    g1i.value = arr[0].interval || 0; } else { g1n.value = "";
-                    g1i.value = 0; }
+                    g1d.value = arr[0].days ? arr[0].days.join(',') : ""; } else { g1n.value = "";
+                    g1d.value = ""; }
                 if (arr.length > 1) { g2n.value = arr[1].name || "";
-                    g2i.value = arr[1].interval || 0; } else { g2n.value = "";
-                    g2i.value = 0; }
+                    g2d.value = arr[1].days ? arr[1].days.join(',') : ""; } else { g2n.value = "";
+                    g2d.value = ""; }
                 if (arr.length > 2) { g3n.value = arr[2].name || "";
-                    g3i.value = arr[2].interval || 0; } else { g3n.value = "";
-                    g3i.value = 0; }
+                    g3d.value = arr[2].days ? arr[2].days.join(',') : ""; } else { g3n.value = "";
+                    g3d.value = ""; }
             }
+
+            const vegVal = parseInt(veg.value) || 35;
+            const genVal = parseInt(gen.value) || 80;
 
             if (preset.value === "cabai") {
                 if (nameInput) nameInput.value = "Cabai / Tomat";
@@ -1885,27 +1946,50 @@
                 if (veg) veg.value = 35;
                 if (gen) gen.value = 80;
                 if (total) total.value = 100;
-                setVeg([{ name: "NPK", interval: 7 }, { name: "Jakaba", interval: 7 }, { name: "", interval: 0 }]);
-                setGen([{ name: "MKP", interval: 7 }, { name: "KNO3", interval: 14 }, { name: "Jakaba", interval: 7 }]);
+                // Vegetatif: NPK 7,14,21,28,35; Jakaba 7,14,21,28,35
+                setVeg([
+                    { name: "NPK", days: [7, 14, 21, 28, 35] },
+                    { name: "Jakaba", days: [7, 14, 21, 28, 35] },
+                    { name: "", days: [] }
+                ]);
+                // Generatif: MKP 42,56; KNO3 49,63; Jakaba 42,49,56,63,70
+                setGen([
+                    { name: "MKP", days: [42, 56] },
+                    { name: "KNO3", days: [49, 63] },
+                    { name: "Jakaba", days: [42, 49, 56, 63, 70] }
+                ]);
             } else if (preset.value === "jeruk") {
                 if (nameInput) nameInput.value = "Jeruk Purut";
                 if (pindah) pindah.value = 7;
                 if (veg) veg.value = 60;
                 if (gen) gen.value = 130;
                 if (total) total.value = 180;
-                setVeg([{ name: "Organik", interval: 14 }, { name: "Jakaba", interval: 7 }, { name: "", interval: 0 }]);
-                setGen([{ name: "KNO3", interval: 14 }, { name: "Jakaba", interval: 7 }, { name: "", interval: 0 }]);
+                setVeg([
+                    { name: "Organik", days: [14, 28, 42, 56] },
+                    { name: "Jakaba", days: [7, 14, 21, 28, 35, 42, 49, 56] },
+                    { name: "", days: [] }
+                ]);
+                setGen([
+                    { name: "KNO3", days: [70, 84, 98, 112, 126] },
+                    { name: "Jakaba", days: [63, 70, 77, 84, 91, 98, 105, 112, 119, 126] },
+                    { name: "", days: [] }
+                ]);
             } else if (preset.value === "sayur") {
                 if (nameInput) nameInput.value = "Sayur Daun";
                 if (pindah) pindah.value = 3;
                 if (veg) veg.value = 25;
                 if (gen) gen.value = 35;
                 if (total) total.value = 45;
-                setVeg([{ name: "AB Mix", interval: 5 }, { name: "Jakaba", interval: 5 }, { name: "", interval: 0 }]);
-                setGen([{ name: "", interval: 0 }, { name: "", interval: 0 }, { name: "", interval: 0 }]);
+                setVeg([
+                    { name: "AB Mix", days: [5, 10, 15, 20, 25] },
+                    { name: "Jakaba", days: [5, 10, 15, 20, 25] },
+                    { name: "", days: [] }
+                ]);
+                setGen([]);
             } else {
-                setVeg([{ name: "NPK", interval: 7 }, { name: "Jakaba", interval: 7 }, { name: "", interval: 0 }]);
-                setGen([{ name: "MKP", interval: 7 }, { name: "KNO3", interval: 14 }, { name: "Jakaba", interval: 7 }]);
+                // custom -> kosong
+                setVeg([]);
+                setGen([]);
             }
             updateFertilizerLabelsAdd();
         }
@@ -1922,17 +2006,17 @@
             document.getElementById("phase-total-hst").value = 100;
             // Reset ferts
             document.getElementById("veg-fert-name-1").value = "NPK";
-            document.getElementById("veg-fert-interval-1").value = 7;
+            document.getElementById("veg-fert-days-1").value = "7,14,21,28,35";
             document.getElementById("veg-fert-name-2").value = "Jakaba";
-            document.getElementById("veg-fert-interval-2").value = 7;
+            document.getElementById("veg-fert-days-2").value = "7,14,21,28,35";
             document.getElementById("veg-fert-name-3").value = "";
-            document.getElementById("veg-fert-interval-3").value = 0;
+            document.getElementById("veg-fert-days-3").value = "";
             document.getElementById("gen-fert-name-1").value = "MKP";
-            document.getElementById("gen-fert-interval-1").value = 7;
+            document.getElementById("gen-fert-days-1").value = "42,56";
             document.getElementById("gen-fert-name-2").value = "KNO3";
-            document.getElementById("gen-fert-interval-2").value = 14;
+            document.getElementById("gen-fert-days-2").value = "49,63";
             document.getElementById("gen-fert-name-3").value = "Jakaba";
-            document.getElementById("gen-fert-interval-3").value = 7;
+            document.getElementById("gen-fert-days-3").value = "42,49,56,63,70";
             updateFertilizerLabelsAdd();
             document.getElementById("add-plant-modal").classList.add("active");
         }
@@ -1955,25 +2039,31 @@
             const total = parseInt(totalInput ? totalInput.value : 100) || 100;
             if (!validatePhases(pindah, veg, gen, total)) return;
 
-            // Kumpulkan pupuk vegetatif
+            // Kumpulkan pupuk vegetatif (name + days)
             const vegFerts = [];
             for (let i = 1; i <= 3; i++) {
                 const nameEl = document.getElementById(`veg-fert-name-${i}`);
-                const intEl = document.getElementById(`veg-fert-interval-${i}`);
-                if (nameEl && intEl) {
+                const daysEl = document.getElementById(`veg-fert-days-${i}`);
+                if (nameEl && daysEl) {
                     const n = nameEl.value.trim();
-                    const iv = parseInt(intEl.value) || 0;
-                    if (n && iv > 0) vegFerts.push({ name: n, interval: iv });
+                    const daysStr = daysEl.value.trim();
+                    if (n && daysStr) {
+                        const days = daysStr.split(',').map(s => parseInt(s.trim())).filter(d => !isNaN(d) && d > 0);
+                        if (days.length > 0) vegFerts.push({ name: n, days });
+                    }
                 }
             }
             const genFerts = [];
             for (let i = 1; i <= 3; i++) {
                 const nameEl = document.getElementById(`gen-fert-name-${i}`);
-                const intEl = document.getElementById(`gen-fert-interval-${i}`);
-                if (nameEl && intEl) {
+                const daysEl = document.getElementById(`gen-fert-days-${i}`);
+                if (nameEl && daysEl) {
                     const n = nameEl.value.trim();
-                    const iv = parseInt(intEl.value) || 0;
-                    if (n && iv > 0) genFerts.push({ name: n, interval: iv });
+                    const daysStr = daysEl.value.trim();
+                    if (n && daysStr) {
+                        const days = daysStr.split(',').map(s => parseInt(s.trim())).filter(d => !isNaN(d) && d > 0);
+                        if (days.length > 0) genFerts.push({ name: n, days });
+                    }
                 }
             }
 
@@ -2013,20 +2103,24 @@
             const gen = f.generatif || [];
             for (let i = 0; i < 3; i++) {
                 const nameEl = document.getElementById(`edit-veg-fert-name-${i+1}`);
-                const intEl = document.getElementById(`edit-veg-fert-interval-${i+1}`);
-                if (nameEl && intEl) {
-                    if (i < veg.length) { nameEl.value = veg[i].name || "";
-                        intEl.value = veg[i].interval || 0; } else { nameEl.value = "";
-                        intEl.value = 0; }
+                const daysEl = document.getElementById(`edit-veg-fert-days-${i+1}`);
+                if (nameEl && daysEl) {
+                    if (i < veg.length) {
+                        nameEl.value = veg[i].name || "";
+                        daysEl.value = veg[i].days ? veg[i].days.join(',') : "";
+                    } else { nameEl.value = "";
+                        daysEl.value = ""; }
                 }
             }
             for (let i = 0; i < 3; i++) {
                 const nameEl = document.getElementById(`edit-gen-fert-name-${i+1}`);
-                const intEl = document.getElementById(`edit-gen-fert-interval-${i+1}`);
-                if (nameEl && intEl) {
-                    if (i < gen.length) { nameEl.value = gen[i].name || "";
-                        intEl.value = gen[i].interval || 0; } else { nameEl.value = "";
-                        intEl.value = 0; }
+                const daysEl = document.getElementById(`edit-gen-fert-days-${i+1}`);
+                if (nameEl && daysEl) {
+                    if (i < gen.length) {
+                        nameEl.value = gen[i].name || "";
+                        daysEl.value = gen[i].days ? gen[i].days.join(',') : "";
+                    } else { nameEl.value = "";
+                        daysEl.value = ""; }
                 }
             }
             updateFertilizerLabelsEdit();
@@ -2056,21 +2150,27 @@
             const vegFerts = [];
             for (let i = 1; i <= 3; i++) {
                 const nameEl = document.getElementById(`edit-veg-fert-name-${i}`);
-                const intEl = document.getElementById(`edit-veg-fert-interval-${i}`);
-                if (nameEl && intEl) {
+                const daysEl = document.getElementById(`edit-veg-fert-days-${i}`);
+                if (nameEl && daysEl) {
                     const n = nameEl.value.trim();
-                    const iv = parseInt(intEl.value) || 0;
-                    if (n && iv > 0) vegFerts.push({ name: n, interval: iv });
+                    const daysStr = daysEl.value.trim();
+                    if (n && daysStr) {
+                        const days = daysStr.split(',').map(s => parseInt(s.trim())).filter(d => !isNaN(d) && d > 0);
+                        if (days.length > 0) vegFerts.push({ name: n, days });
+                    }
                 }
             }
             const genFerts = [];
             for (let i = 1; i <= 3; i++) {
                 const nameEl = document.getElementById(`edit-gen-fert-name-${i}`);
-                const intEl = document.getElementById(`edit-gen-fert-interval-${i}`);
-                if (nameEl && intEl) {
+                const daysEl = document.getElementById(`edit-gen-fert-days-${i}`);
+                if (nameEl && daysEl) {
                     const n = nameEl.value.trim();
-                    const iv = parseInt(intEl.value) || 0;
-                    if (n && iv > 0) genFerts.push({ name: n, interval: iv });
+                    const daysStr = daysEl.value.trim();
+                    if (n && daysStr) {
+                        const days = daysStr.split(',').map(s => parseInt(s.trim())).filter(d => !isNaN(d) && d > 0);
+                        if (days.length > 0) genFerts.push({ name: n, days });
+                    }
                 }
             }
 
@@ -2289,9 +2389,15 @@
                         totalHst: 100,
                         phases: { pindah: 2, veg: 35, gen: 80, panen: 100 },
                         fertilizers: {
-                            vegetatif: [{ name: "NPK", interval: 7 }, { name: "Jakaba", interval: 7 }],
-                            generatif: [{ name: "MKP", interval: 7 }, { name: "KNO3", interval: 14 }, { name: "Jakaba",
-                                interval: 7 }]
+                            vegetatif: [
+                                { name: "NPK", days: [7, 14, 21, 28, 35] },
+                                { name: "Jakaba", days: [7, 14, 21, 28, 35] }
+                            ],
+                            generatif: [
+                                { name: "MKP", days: [42, 56] },
+                                { name: "KNO3", days: [49, 63] },
+                                { name: "Jakaba", days: [42, 49, 56, 63, 70] }
+                            ]
                         },
                         comments: {}
                     },
@@ -2303,8 +2409,14 @@
                         totalHst: 180,
                         phases: { pindah: 7, veg: 60, gen: 130, panen: 180 },
                         fertilizers: {
-                            vegetatif: [{ name: "Organik", interval: 14 }, { name: "Jakaba", interval: 7 }],
-                            generatif: [{ name: "KNO3", interval: 14 }, { name: "Jakaba", interval: 7 }]
+                            vegetatif: [
+                                { name: "Organik", days: [14, 28, 42, 56] },
+                                { name: "Jakaba", days: [7, 14, 21, 28, 35, 42, 49, 56] }
+                            ],
+                            generatif: [
+                                { name: "KNO3", days: [70, 84, 98, 112, 126] },
+                                { name: "Jakaba", days: [63, 70, 77, 84, 91, 98, 105, 112, 119, 126] }
+                            ]
                         },
                         comments: {}
                     }
