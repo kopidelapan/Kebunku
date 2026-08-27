@@ -1264,7 +1264,7 @@
 
     <button id="scroll-today-btn" onclick="scrollToToday()" title="Scroll ke hari ini">📅</button>
 
-    <!-- ===== HISTORY SECTION (diperbaiki) ===== -->
+    <!-- ===== HISTORY SECTION (hanya untuk tanaman aktif) ===== -->
     <div class="history-section">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
             <h2 style="margin:0;">📋 History Tindakan - <span id="history-plant-name" style="color:#2563eb;">-</span></h2>
@@ -1284,6 +1284,7 @@
             <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center flex-shrink-0">
                 <h2 class="text-lg font-bold">📊 Summary Kalender</h2>
                 <div class="flex items-center gap-2">
+                    <button onclick="scrollSummaryToToday()" class="text-xs bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded" title="Scroll ke hari ini">📅 Hari Ini</button>
                     <button onclick="resetPlantOrder()" class="text-xs bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 px-2 py-1 rounded" title="Reset urutan tanaman">↺ Reset</button>
                     <button class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl leading-none" onclick="closeModal('summary-modal')">&times;</button>
                 </div>
@@ -1728,7 +1729,7 @@
             if (activeTitle && plantsData[currentPlantId]) activeTitle.innerText = plantsData[currentPlantId].name;
             updateStatsAndChart();
             renderTodayTasks();
-            renderHistory(); // update history saat ganti tanaman
+            renderHistory();
         }
 
         function switchPlant() {
@@ -1840,7 +1841,7 @@
             }
 
             renderLegend(plant);
-            renderHistory(); // update history
+            renderHistory();
             updateStatsAndChart();
             renderTodayTasks();
             if (todayCell) setTimeout(() => todayCell.scrollIntoView({ behavior: 'smooth', block: 'nearest',
@@ -2322,7 +2323,7 @@
         }
 
         // ========================================================================
-        //  📊 SUMMARY — STICKY HEADER + REORDERABLE COLUMNS
+        //  📊 SUMMARY — STICKY HEADER + REORDERABLE COLUMNS + SCROLL TO TODAY
         // ========================================================================
 
         function getPlantOrder() {
@@ -2360,6 +2361,24 @@
             if (confirm('Reset urutan tanaman ke default (sesuai urutan tambah)?')) {
                 localStorage.removeItem('summaryPlantOrder');
                 openSummaryModal();
+            }
+        }
+
+        // Fungsi scroll ke hari ini di summary
+        function scrollSummaryToToday() {
+            const todayRow = document.getElementById('summary-today-row');
+            if (todayRow) {
+                todayRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                // Coba cari berdasarkan class (fallback)
+                const rows = document.querySelectorAll('#summary-body tr');
+                for (let row of rows) {
+                    if (row.querySelector('.bg-amber-100, .dark\\:bg-amber-900')) {
+                        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        return;
+                    }
+                }
+                alert('Tidak ada tanggal hari ini dalam rentang kalender.');
             }
         }
 
@@ -2417,6 +2436,8 @@
             const todayStr = getTodayStr();
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 
+            let todayRowId = null;
+
             for (let d = new Date(minDate); d <= maxDate; d.setDate(d.getDate() + 1)) {
                 const year = d.getFullYear();
                 const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -2427,6 +2448,12 @@
 
                 const tr = document.createElement("tr");
                 tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors";
+
+                // Tandai hari ini
+                if (isoDate === todayStr) {
+                    tr.id = 'summary-today-row';
+                    todayRowId = tr;
+                }
 
                 const tdDate = document.createElement("td");
                 const bg = isoDate === todayStr ? "bg-amber-100 dark:bg-amber-900 text-amber-900 dark:text-amber-100" :
@@ -2468,6 +2495,13 @@
             }
 
             document.getElementById("summary-modal").classList.add("active");
+
+            // Auto scroll ke hari ini setelah modal tampil
+            if (todayRowId) {
+                setTimeout(() => {
+                    todayRowId.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            }
         }
 
         // ===== HISTORY (hanya untuk tanaman aktif) =====
