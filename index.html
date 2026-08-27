@@ -13,6 +13,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js">
     </script>
     <style>
+        /* (semua style sama seperti sebelumnya, tidak ada perubahan) */
         * {
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -1263,9 +1264,10 @@
 
     <button id="scroll-today-btn" onclick="scrollToToday()" title="Scroll ke hari ini">📅</button>
 
+    <!-- ===== HISTORY SECTION (diperbaiki) ===== -->
     <div class="history-section">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
-            <h2 style="margin:0;">📋 History Tindakan</h2>
+            <h2 style="margin:0;">📋 History Tindakan - <span id="history-plant-name" style="color:#2563eb;">-</span></h2>
             <input type="text" id="history-search" placeholder="🔍 Cari catatan..." oninput="renderHistory()">
         </div>
         <div class="history-table-wrapper">
@@ -1726,6 +1728,7 @@
             if (activeTitle && plantsData[currentPlantId]) activeTitle.innerText = plantsData[currentPlantId].name;
             updateStatsAndChart();
             renderTodayTasks();
+            renderHistory(); // update history saat ganti tanaman
         }
 
         function switchPlant() {
@@ -1837,7 +1840,7 @@
             }
 
             renderLegend(plant);
-            renderHistory();
+            renderHistory(); // update history
             updateStatsAndChart();
             renderTodayTasks();
             if (todayCell) setTimeout(() => todayCell.scrollIntoView({ behavior: 'smooth', block: 'nearest',
@@ -2307,7 +2310,6 @@
             if (confirm(`Hapus "${plantsData[currentPlantId].name}"?`)) {
                 const deletedId = currentPlantId;
                 delete plantsData[deletedId];
-                // Hapus dari order summary jika ada
                 const order = getPlantOrder();
                 const idx = order.indexOf(deletedId);
                 if (idx > -1) { order.splice(idx, 1);
@@ -2323,15 +2325,12 @@
         //  📊 SUMMARY — STICKY HEADER + REORDERABLE COLUMNS
         // ========================================================================
 
-        // ----- PLANT ORDER (disimpan di localStorage) -----
         function getPlantOrder() {
             const stored = localStorage.getItem('summaryPlantOrder');
             if (stored) {
                 try {
                     const order = JSON.parse(stored);
-                    // filter yang masih ada
                     const valid = order.filter(id => plantsData[id]);
-                    // tambahkan tanaman baru yang belum ada di order
                     const existing = new Set(valid);
                     Object.keys(plantsData).forEach(id => {
                         if (!existing.has(id)) valid.push(id);
@@ -2352,10 +2351,8 @@
             if (idx === -1) return;
             const newIdx = direction === 'up' ? idx - 1 : idx + 1;
             if (newIdx < 0 || newIdx >= order.length) return;
-            // swap
             [order[idx], order[newIdx]] = [order[newIdx], order[idx]];
             savePlantOrder(order);
-            // re-render summary
             openSummaryModal();
         }
 
@@ -2366,18 +2363,15 @@
             }
         }
 
-        // ----- Buka Summary -----
         function openSummaryModal() {
             const headerRow = document.getElementById("summary-header-row");
             const tbody = document.getElementById("summary-body");
             if (!headerRow || !tbody) return;
 
-            // bersihkan
             headerRow.innerHTML =
                 '<th class="py-2 px-3 border-r border-slate-700 summary-sticky-col bg-slate-900 text-white">Kalender</th>';
             tbody.innerHTML = "";
 
-            // ambil urutan tanaman
             const plantIds = getPlantOrder();
             if (plantIds.length === 0) {
                 tbody.innerHTML =
@@ -2385,7 +2379,6 @@
                 return;
             }
 
-            // header kolom (dengan tombol reorder)
             plantIds.forEach((id, index) => {
                 const plant = plantsData[id];
                 if (!plant) return;
@@ -2408,7 +2401,6 @@
                 headerRow.appendChild(th);
             });
 
-            // cari rentang tanggal
             let minDate = null,
                 maxDate = null;
             plantIds.forEach(id => {
@@ -2478,27 +2470,44 @@
             document.getElementById("summary-modal").classList.add("active");
         }
 
-        // ===== HISTORY =====
+        // ===== HISTORY (hanya untuk tanaman aktif) =====
         function renderHistory() {
             const searchInput = document.getElementById("history-search");
             const search = searchInput ? searchInput.value.toLowerCase() : "";
             const tbody = document.getElementById("history-body");
+            const historyPlantName = document.getElementById("history-plant-name");
             if (!tbody) return;
             tbody.innerHTML = "";
-            const allEntries = [];
-            for (let id in plantsData) {
-                const plant = plantsData[id];
-                for (let hst in plant.comments) {
-                    const item = plant.comments[hst];
-                    allEntries.push({ plantName: plant.name, hst: parseInt(hst), dateStr: item.dateStr, phase: item
-                            .phase, comment: item.comment, searchStr: (plant.name + " " + item.comment + " " + item
-                            .phase).toLowerCase() });
-                }
+
+            const currentPlant = plantsData[currentPlantId];
+            if (!currentPlant) {
+                if (historyPlantName) historyPlantName.innerText = "-";
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:16px;">Pilih tanaman terlebih dahulu.</td></tr>';
+                return;
             }
+
+            if (historyPlantName) historyPlantName.innerText = currentPlant.name;
+
+            const allEntries = [];
+            for (let hst in currentPlant.comments) {
+                const item = currentPlant.comments[hst];
+                allEntries.push({
+                    plantName: currentPlant.name,
+                    hst: parseInt(hst),
+                    dateStr: item.dateStr,
+                    phase: item.phase,
+                    comment: item.comment,
+                    searchStr: (currentPlant.name + " " + item.comment + " " + item.phase).toLowerCase()
+                });
+            }
+
             const filtered = search ? allEntries.filter(e => e.searchStr.includes(search)) : allEntries;
             filtered.sort((a, b) => a.hst - b.hst);
-            if (filtered.length === 0) { tbody.innerHTML =
-                    '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:16px;">Tidak ada catatan.</td></tr>'; return; }
+            if (filtered.length === 0) {
+                tbody.innerHTML =
+                    '<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:16px;">Tidak ada catatan untuk tanaman ini.</td></tr>';
+                return;
+            }
             filtered.forEach(e => {
                 const tr = document.createElement("tr");
                 tr.innerHTML =
@@ -2529,7 +2538,6 @@
                         plantsData = data;
                         migrateAllFertilizers();
                         currentPlantId = Object.keys(plantsData)[0] || "plant_1";
-                        // reset order summary karena data baru
                         localStorage.removeItem('summaryPlantOrder');
                         autoSave();
                         populatePlantSelector();
