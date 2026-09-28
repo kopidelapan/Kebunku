@@ -13,7 +13,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js">
     </script>
     <style>
-        /* (semua style sama seperti sebelumnya, tidak ada perubahan) */
         * {
             box-sizing: border-box;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -962,7 +961,7 @@
             color: #e2e8f0;
         }
         #history-search {
-            margin-bottom: 8px;
+            margin-bottom: 0;
             padding: 6px 10px;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
@@ -1036,7 +1035,6 @@
             background-color: #0f172a !important;
         }
 
-        /* ===== STICKY HEADER UNTUK SUMMARY ===== */
         #summary-modal .modal-body {
             overflow: auto;
             max-height: 70vh;
@@ -1077,7 +1075,6 @@
             background: #0f172a !important;
         }
 
-        /* ===== REORDER CONTROLS ===== */
         .reorder-btn {
             background: transparent;
             border: none;
@@ -1152,7 +1149,6 @@
             gap: 6px;
         }
 
-        /* 4 kolom pupuk */
         .fert-4-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -1178,6 +1174,30 @@
             .fert-4-grid {
                 grid-template-columns: 1fr 1fr;
             }
+        }
+
+        #btn-copy-history {
+            background: #25d366;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: .8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            transition: background .15s, transform .1s;
+            touch-action: manipulation;
+        }
+        #btn-copy-history:active {
+            background: #128c4a;
+            transform: scale(.96);
+        }
+        #btn-copy-history.copied {
+            background: #059669;
         }
     </style>
 </head>
@@ -1264,11 +1284,14 @@
 
     <button id="scroll-today-btn" onclick="scrollToToday()" title="Scroll ke hari ini">📅</button>
 
-    <!-- ===== HISTORY SECTION (hanya untuk tanaman aktif) ===== -->
+    <!-- ===== HISTORY SECTION ===== -->
     <div class="history-section">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
             <h2 style="margin:0;">📋 History Tindakan - <span id="history-plant-name" style="color:#2563eb;">-</span></h2>
-            <input type="text" id="history-search" placeholder="🔍 Cari catatan..." oninput="renderHistory()">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+                <input type="text" id="history-search" placeholder="🔍 Cari catatan..." oninput="renderHistory()">
+                <button id="btn-copy-history" onclick="copyFertilizerHistory()" title="Copy history pemupukan untuk diskusi di WA/AI">📋 Copy History</button>
+            </div>
         </div>
         <div class="history-table-wrapper">
             <table class="history-table">
@@ -1467,13 +1490,11 @@
             console.log("Firebase initialized successfully.");
         } catch (e) { console.error("Firebase init error:", e); }
 
-        // ===== STATE GLOBAL =====
         let plantsData = {},
             currentPlantId = null,
             activeHst = null,
             isSyncing = false;
 
-        // ===== MIGRASI DATA FERTILIZER LAMA KE BARU =====
         function migrateFertilizers(plant) {
             if (!plant.fertilizers) {
                 plant.fertilizers = { vegetatif: [], generatif: [] };
@@ -1520,7 +1541,6 @@
             }
         }
 
-        // ===== FUNGSI TANGGAL =====
         function getTodayStr() {
             const d = new Date();
             const year = d.getFullYear();
@@ -1552,7 +1572,6 @@
             return "fase-panen";
         }
 
-        // ===== FERTILIZER REMINDER =====
         function getFertilizerReminder(hst, plant) {
             if (!plant.fertilizers) return null;
             const f = plant.fertilizers;
@@ -1569,7 +1588,6 @@
             return reminders.length > 0 ? reminders.join(" + ") : null;
         }
 
-        // ===== TUGAS HARI INI =====
         function getTodayTasks(includeFutureDays = 3) {
             const tasks = [];
             const date = new Date();
@@ -1603,7 +1621,6 @@
             return true;
         }
 
-        // ===== STATUS =====
         function setStatus(status, text) {
             const dot = document.getElementById('statusDot'),
                 txt = document.getElementById('statusText');
@@ -1616,7 +1633,6 @@
                 txt.innerText = text || 'Error'; }
         }
 
-        // ===== FIREBASE SAVE/LOAD =====
         async function saveToFirebase() {
             if (!firebaseReady || !db) {
                 localStorage.setItem('plantsData_cache', JSON.stringify(plantsData));
@@ -1691,7 +1707,6 @@
             if (firebaseReady) saveTimeout = setTimeout(() => saveToFirebase(), 800);
         }
 
-        // ===== UPDATE LABEL FERTILIZER DINAMIS =====
         function updateFertilizerLabelsAdd() {
             const veg = parseInt(document.getElementById('phase-veg-end').value) || 35;
             const gen = parseInt(document.getElementById('phase-gen-end').value) || 80;
@@ -1710,7 +1725,6 @@
             if (genLabel) genLabel.innerText = `🧪 Pemupukan Fase Generatif (HST ${veg+1} - ${gen})`;
         }
 
-        // ===== RENDER =====
         function populatePlantSelector() {
             const select = document.getElementById("plant-select");
             if (!select) return;
@@ -1952,7 +1966,6 @@
             container.innerHTML = html;
         }
 
-        // ===== COMMENT MODAL =====
         function openCommentModal(hst, dateDisplay) {
             activeHst = hst;
             const plant = plantsData[currentPlantId];
@@ -2008,7 +2021,6 @@
             renderTable();
         }
 
-        // ===== PRESET =====
         function applyPreset() {
             const preset = document.getElementById("preset-select");
             if (!preset) return;
@@ -2109,7 +2121,6 @@
             updateFertilizerLabelsAdd();
         }
 
-        // ===== ADD / EDIT PLANT =====
         function openAddPlantModal() {
             document.getElementById("preset-select").value = "custom";
             document.getElementById("new-plant-name").value = "";
@@ -2322,10 +2333,6 @@
             }
         }
 
-        // ========================================================================
-        //  📊 SUMMARY — STICKY HEADER + REORDERABLE COLUMNS + SCROLL TO TODAY
-        // ========================================================================
-
         function getPlantOrder() {
             const stored = localStorage.getItem('summaryPlantOrder');
             if (stored) {
@@ -2364,13 +2371,11 @@
             }
         }
 
-        // Fungsi scroll ke hari ini di summary
         function scrollSummaryToToday() {
             const todayRow = document.getElementById('summary-today-row');
             if (todayRow) {
                 todayRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
-                // Coba cari berdasarkan class (fallback)
                 const rows = document.querySelectorAll('#summary-body tr');
                 for (let row of rows) {
                     if (row.querySelector('.bg-amber-100, .dark\\:bg-amber-900')) {
@@ -2449,7 +2454,6 @@
                 const tr = document.createElement("tr");
                 tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors";
 
-                // Tandai hari ini
                 if (isoDate === todayStr) {
                     tr.id = 'summary-today-row';
                     todayRowId = tr;
@@ -2496,7 +2500,6 @@
 
             document.getElementById("summary-modal").classList.add("active");
 
-            // Auto scroll ke hari ini setelah modal tampil
             if (todayRowId) {
                 setTimeout(() => {
                     todayRowId.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2504,7 +2507,6 @@
             }
         }
 
-        // ===== HISTORY (hanya untuk tanaman aktif) =====
         function renderHistory() {
             const searchInput = document.getElementById("history-search");
             const search = searchInput ? searchInput.value.toLowerCase() : "";
@@ -2550,7 +2552,115 @@
             });
         }
 
-        // ===== EXPORT / IMPORT =====
+        // ===== COPY HISTORY (hanya info tanaman, fase, dan catatan aktual) =====
+        async function copyFertilizerHistory() {
+            const plant = plantsData[currentPlantId];
+            if (!plant) {
+                alert('Tidak ada tanaman aktif untuk di-copy.');
+                return;
+            }
+
+            const todayStr = getTodayStr();
+            const currentHst = getHstForDate(plant, todayStr);
+            const hst0Date = new Date(plant.hst0 + 'T00:00:00');
+
+            const formatDate = (d) => {
+                const day = String(d.getDate()).padStart(2, '0');
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                return `${day}/${month}/${d.getFullYear()}`;
+            };
+            const hstToDate = (hst) => {
+                const d = new Date(hst0Date);
+                d.setDate(hst0Date.getDate() + (hst - 1));
+                return formatDate(d);
+            };
+            const getDayName = (d) => ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][d.getDay()];
+
+            let usiaText = '-';
+            if (currentHst >= 1 && currentHst <= plant.totalHst) {
+                usiaText = `HST-${currentHst} (${getDayName(new Date())})`;
+            } else if (currentHst < 1) {
+                usiaText = `Belum ditanam (mulai HST-1 pada ${formatDate(hst0Date)})`;
+            } else {
+                usiaText = `Selesai siklus (${currentHst - plant.totalHst} hari lalu)`;
+            }
+
+            const faseText = (currentHst >= 1 && currentHst <= plant.totalHst)
+                ? getPhaseName(currentHst, plant)
+                : '-';
+
+            let txt = '';
+            txt += `🌱 *RINGKASAN HISTORY PEMUPUKAN TANAMAN*\n`;
+            txt += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+            txt += `📋 *Informasi Tanaman*\n`;
+            txt += `• Nama        : ${plant.name}\n`;
+            if (plant.group) txt += `• Kategori    : ${plant.group}\n`;
+            txt += `• Tgl Tanam   : ${formatDate(hst0Date)}\n`;
+            txt += `• Usia Saat Ini: ${usiaText}\n`;
+            txt += `• Total Siklus: ${plant.totalHst} HST\n`;
+            txt += `• Fase Aktif  : ${faseText}\n\n`;
+
+            txt += `📅 *Rincian Fase Pertumbuhan*\n`;
+            txt += `• Pindah Tanam: HST 1 - ${plant.phases.pindah}\n`;
+            txt += `• Vegetatif   : HST ${plant.phases.pindah + 1} - ${plant.phases.veg}\n`;
+            txt += `• Generatif   : HST ${plant.phases.veg + 1} - ${plant.phases.gen}\n`;
+            txt += `• Panen       : HST ${plant.phases.gen + 1} - ${plant.phases.panen}\n\n`;
+
+            const commentHst = Object.keys(plant.comments).map(h => parseInt(h)).sort((a, b) => a - b);
+            if (commentHst.length > 0) {
+                txt += `📝 *CATATAN TINDAKAN AKTUAL*\n\n`;
+                commentHst.forEach(hst => {
+                    const c = plant.comments[hst];
+                    txt += `• HST-${hst} (${hstToDate(hst)})\n`;
+                    txt += `  ${c.comment}\n\n`;
+                });
+            } else {
+                txt += `📝 *CATATAN TINDAKAN AKTUAL:*\n  (belum ada catatan tindakan)\n\n`;
+            }
+
+            txt += `━━━━━━━━━━━━━━━━━━━━\n`;
+            txt += `Mohon analisis kondisi tanaman di atas dan berikan saran pemupukan/pemeliharaan selanjutnya. Terima kasih 🙏`;
+
+            const showFeedback = () => {
+                const btn = document.getElementById('btn-copy-history');
+                if (btn) {
+                    const orig = btn.innerHTML;
+                    btn.innerHTML = '✅ Tercopy!';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.innerHTML = orig;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }
+            };
+
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(txt);
+                    showFeedback();
+                } else {
+                    throw new Error('Clipboard API not available');
+                }
+            } catch (err) {
+                const ta = document.createElement('textarea');
+                ta.value = txt;
+                ta.style.position = 'fixed';
+                ta.style.top = '0';
+                ta.style.left = '-9999px';
+                ta.setAttribute('readonly', '');
+                document.body.appendChild(ta);
+                ta.select();
+                ta.setSelectionRange(0, txt.length);
+                try {
+                    document.execCommand('copy');
+                    showFeedback();
+                } catch (e) {
+                    alert('Gagal menyalin: ' + e.message);
+                }
+                document.body.removeChild(ta);
+            }
+        }
+
         function exportData() {
             const dataStr = JSON.stringify(plantsData, null, 2);
             const blob = new Blob([dataStr], { type: 'application/json' });
@@ -2584,7 +2694,6 @@
             document.getElementById("import-file").value = "";
         }
 
-        // ===== DARK MODE, SCROLL, MODAL HELPERS =====
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
@@ -2610,7 +2719,6 @@
             }
         }
 
-        // ===== INIT =====
         document.addEventListener("DOMContentLoaded", async () => {
             if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
             document.getElementById("current-date-display").innerText = new Date().toLocaleDateString('id-ID', {
