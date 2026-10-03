@@ -1363,6 +1363,8 @@
                 <select id="new-plant-group"><option value="Kebun">Kebun</option><option value="Pot">Pot</option><option value="Rumah Kaca">Rumah Kaca</option><option value="Lainnya">Lainnya</option></select>
                 <label for="new-plant-photo">URL Foto (opsional):</label>
                 <input type="url" id="new-plant-photo" placeholder="https://example.com/foto.jpg">
+                <label for="new-plant-desc">Deskripsi Tanaman (opsional):</label>
+                <textarea id="new-plant-desc" placeholder="misal: Cabai rawit merah varietas Bhaskara, media tanam campuran tanah+kompos+sekam, kondisi daun hijau sehat..."></textarea>
                 <label for="new-plant-hst0">Tanggal Tanam:</label>
                 <input type="date" id="new-plant-hst0">
                 <label style="margin-top:10px;">Durasi Fase (HST):</label>
@@ -1420,6 +1422,8 @@
                 <label for="edit-plant-name">Nama:</label><input type="text" id="edit-plant-name">
                 <label for="edit-plant-group">Kategori:</label><select id="edit-plant-group"><option value="Kebun">Kebun</option><option value="Pot">Pot</option><option value="Rumah Kaca">Rumah Kaca</option><option value="Lainnya">Lainnya</option></select>
                 <label for="edit-plant-photo">URL Foto:</label><input type="url" id="edit-plant-photo" placeholder="https://example.com/foto.jpg">
+                <label for="edit-plant-desc">Deskripsi Tanaman:</label>
+                <textarea id="edit-plant-desc" placeholder="Jelaskan detail tanaman..."></textarea>
                 <label for="edit-plant-hst0">Tanggal Tanam:</label><input type="date" id="edit-plant-hst0">
                 <label style="margin-top:10px;">Durasi Fase:</label>
                 <div class="phase-grid">
@@ -2126,6 +2130,7 @@
             document.getElementById("new-plant-name").value = "";
             document.getElementById("new-plant-group").value = "Kebun";
             document.getElementById("new-plant-photo").value = "";
+            document.getElementById("new-plant-desc").value = "";
             document.getElementById("new-plant-hst0").value = getTodayStr();
             document.getElementById("phase-pindah-end").value = 2;
             document.getElementById("phase-veg-end").value = 35;
@@ -2158,6 +2163,7 @@
             if (!name) { alert("Masukkan nama tanaman!"); return; }
             const group = document.getElementById("new-plant-group");
             const photo = document.getElementById("new-plant-photo");
+            const desc = document.getElementById("new-plant-desc");
             const hst0Input = document.getElementById("new-plant-hst0");
             const pindahInput = document.getElementById("phase-pindah-end");
             const vegInput = document.getElementById("phase-veg-end");
@@ -2201,6 +2207,7 @@
                 name,
                 group: group ? group.value : "Kebun",
                 photo: photo ? photo.value.trim() : "",
+                description: desc ? desc.value.trim() : "",
                 hst0: hst0Input ? hst0Input.value : getTodayStr(),
                 totalHst: total,
                 phases: { pindah, veg, gen, panen: total },
@@ -2220,6 +2227,7 @@
             document.getElementById("edit-plant-name").value = plant.name;
             document.getElementById("edit-plant-group").value = plant.group || "Kebun";
             document.getElementById("edit-plant-photo").value = plant.photo || "";
+            document.getElementById("edit-plant-desc").value = plant.description || "";
             document.getElementById("edit-plant-hst0").value = plant.hst0;
             document.getElementById("edit-phase-pindah-end").value = plant.phases.pindah;
             document.getElementById("edit-phase-veg-end").value = plant.phases.veg;
@@ -2265,6 +2273,7 @@
             if (!name) { alert("Masukkan nama tanaman!"); return; }
             const group = document.getElementById("edit-plant-group");
             const photo = document.getElementById("edit-plant-photo");
+            const desc = document.getElementById("edit-plant-desc");
             const hst0Input = document.getElementById("edit-plant-hst0");
             const pindahInput = document.getElementById("edit-phase-pindah-end");
             const vegInput = document.getElementById("edit-phase-veg-end");
@@ -2306,6 +2315,7 @@
             plant.name = name;
             plant.group = group ? group.value : "Kebun";
             plant.photo = photo ? photo.value.trim() : "";
+            plant.description = desc ? desc.value.trim() : "";
             plant.hst0 = hst0Input ? hst0Input.value : getTodayStr();
             plant.totalHst = total;
             plant.phases = { pindah, veg, gen, panen: total };
@@ -2595,6 +2605,7 @@
             txt += `📋 *Informasi Tanaman*\n`;
             txt += `• Nama        : ${plant.name}\n`;
             if (plant.group) txt += `• Kategori    : ${plant.group}\n`;
+            if (plant.description) txt += `• Deskripsi   : ${plant.description}\n`;
             txt += `• Tgl Tanam   : ${formatDate(hst0Date)}\n`;
             txt += `• Usia Saat Ini: ${usiaText}\n`;
             txt += `• Total Siklus: ${plant.totalHst} HST\n`;
@@ -2748,6 +2759,7 @@
                         name: "Cabai (Pot Utama)",
                         group: "Pot",
                         photo: "",
+                        description: "",
                         hst0: todayStr,
                         totalHst: 100,
                         phases: { pindah: 2, veg: 35, gen: 80, panen: 100 },
@@ -2768,6 +2780,7 @@
                         name: "Jeruk Purut",
                         group: "Kebun",
                         photo: "",
+                        description: "",
                         hst0: todayStr,
                         totalHst: 180,
                         phases: { pindah: 7, veg: 60, gen: 130, panen: 180 },
